@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarun Bonu — Software Developer</title>
+    <meta name="description" content="Tarun Bonu — Software Developer and B.Tech student specializing in full-stack development, AI, and practical digital products.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='sans-serif' font-weight='bold'>TB</text></svg>">
+    <link rel="stylesheet" href="css/style.css?v=20260817-2115">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="nav">
+        <div class="nav__inner">
+            <a href="#" class="nav__logo">TB.</a>
+            <nav class="nav__links" id="navLinks">
+                <a href="#" class="nav__link is-active">HOME</a>
+                <a href="#about" class="nav__link">ABOUT</a>
+                <a href="#skills" class="nav__link">SKILLS</a>
+                <a href="#projects" class="nav__link">PROJECTS</a>
+                <a href="#certifications" class="nav__link">CERTIFICATIONS</a>
+                <a href="#resume" class="nav__link">RESUME</a>
+                <a href="#contact" class="nav__link">CONTACT</a>
+            </nav>
+            <a href="#contact" class="lets-talk">
+                LET’S TALK <span class="arrow">↗</span>
+            </a>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <span class="theme-toggle__label">LIGHT</span>
+            </button>
+            <button class="nav__menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero__content">
+                <p class="hero__label">HELLO, I'M</p>
+                <h1 class="hero__title">
+                    <span class="hero__name">TARUN</span>
+                    <span class="hero__name hero__name--outlined" data-text="BONU">BONU</span>
+                </h1>
+                <p class="hero__role">SOFTWARE DEVELOPER<br>&amp; B.TECH STUDENT</p>
+                <blockquote class="hero__quote">
+                    <p>I build full-stack applications, explore AI, and turn ideas into impactful solutions.</p>
+                </blockquote>
+                <div class="hero__actions">
+                    <a href="#" class="btn btn--primary">VIEW MY WORK ↗</a>
+                    <a href="#" class="btn btn--secondary">DOWNLOAD RESUME ↓</a>
+                </div>
+            </div>
+            <div class="hero__visual">
+                <div class="visual" id="visual">
+                    <div class="stage" id="stage">
+                        <div class="blue-circle"></div>
+                        <div class="grid"></div>
+                        <div class="depth-shadow"></div>
+                        <img src="assets/images/tarun-hero.png" alt="Tarun Bonu — Software Developer" class="portrait" loading="eager" decoding="async">
+                        <div class="orange-dot"></div>
+                        <div class="blue-square"></div>
+                        <div class="crosshair"></div>
+                        <div class="satellite-orbit">
+                            <div class="satellite">
+                                <div class="panel panel-left"></div>
+                                <div class="panel panel-right"></div>
+                                <div class="satellite-body">
+                                    <div class="satellite-light"></div>
+                                </div>
+                                <div class="antenna">
+                                    <div class="antenna-tip"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stats__inner">
+                <div class="stats__item">
+                    <span class="stats__number">180+</span>
+                    <span class="stats__label">LEETCODE PROBLEMS</span>
+                </div>
+                <div class="stats__divider"></div>
+                <div class="stats__item">
+                    <span class="stats__number">8.95</span>
+                    <span class="stats__label">CGPA</span>
+                </div>
+                <div class="stats__divider"></div>
+                <div class="stats__item">
+                    <span class="stats__number">04</span>
+                    <span class="stats__label">CERTIFICATIONS</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="about" id="about">
+            <div class="about__inner">
+                <div class="about__content">
+                    <p class="section-label reveal">ABOUT / 01</p>
+                    <h2 class="about__title reveal reveal-delay-1">A DEVELOPER<br>WHO LIKES<br>TO BUILD.</h2>
+                    <p class="about__text reveal reveal-delay-2">I'm Tarun Bonu, a B.Tech Computer Science and Engineering student focused on software development and building practical digital products. I enjoy turning ideas into functional applications and continuously improving my skills through projects and hands-on learning.</p>
+                    <div class="about__meta reveal reveal-delay-3">
+                        <div class="about__meta-item">
+                            <span class="about__meta-label">CURRENTLY</span>
+                            <span class="about__meta-value">B.Tech CSE Student</span>
+                        </div>
+                        <div class="about__meta-item">
+                            <span class="about__meta-label">COLLEGE</span>
+                            <span class="about__meta-value">Gokaraju Rangaraju College of Engineering</span>
+                        </div>
+                        <div class="about__meta-item">
+                            <span class="about__meta-label">CGPA</span>
+                            <span class="about__meta-value">8.95 / 10</span>
+                        </div>
+                        <div class="about__meta-item">
+                            <span class="about__meta-label">LOCATION</span>
+                            <span class="about__meta-value">Hyderabad, India</span>
+                        </div>
+                    </div>
+                    <div class="about__achievements reveal reveal-delay-4">
+                        <div class="about__achievement">
+                            <span class="about__achievement-label">HACKATHON</span>
+                            <span class="about__achievement-value">3rd Place — College-level Hackathon</span>
+                        </div>
+                        <div class="about__achievement">
+                            <span class="about__achievement-label">DSA</span>
+                            <a href="https://leetcode.com/u/tarunbonu547/" target="_blank" rel="noopener noreferrer" class="about__achievement-value">180+ LeetCode Problems ↗</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="about__visual reveal reveal-delay-2">
+                    <div class="about-visual" id="aboutVisual">
+                        <div class="visual-label">SYSTEM / 01</div>
+                        <div class="system" id="system">
+                            <div class="orbit">
+                                <div class="orbit-node"></div>
+                            </div>
+                            <div class="connections">
+                                <div class="line line-1"></div>
+                                <div class="line line-2"></div>
+                                <div class="line line-3"></div>
+                                <div class="line line-4"></div>
+                            </div>
+                            <div class="node node-1">AI</div>
+                            <div class="node node-2">WEB</div>
+                            <div class="node node-3">BUILD</div>
+                            <div class="node node-4">CODE</div>
+                            <div class="core">CREATE</div>
+                        </div>
+                        <div class="orange-square"></div>
+                        <div class="data-points">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <div class="bottom-label">BUILD / ITERATE / CREATE</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="skills" id="skills">
+            <div class="skills__inner">
+                <div class="skills__left">
+                    <div class="skills__header">
+                        <p class="section-label reveal">SKILLS / 02</p>
+                        <h2 class="skills__title reveal reveal-delay-1">WHAT<br>I WORK<br>WITH.</h2>
+                    </div>
+                    <div class="skills__visual">
+                        <div class="computer-showcase">
+                            <div class="computer">
+                                <div class="computer-top">
+                                    <span>DEV / SYSTEM</span>
+                                    <div class="dots">
+                                        <i></i>
+                                        <i></i>
+                                        <i></i>
+                                    </div>
+                                </div>
+                                <div class="screen">
+                                    <div class="scanlines"></div>
+                                    <div class="abstract-lines">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <div class="signal"></div>
+                                    <div class="signal-point"></div>
+                                    <div class="cursor"></div>
+                                </div>
+                            </div>
+                            <div class="computer-stand"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skills__categories">
+                    <div class="skill-category reveal reveal-delay-2">
+                        <div class="skill-category__header">
+                            <span class="skill-category__number">01</span>
+                            <h3 class="skill-category__title">LANGUAGES</h3>
+                        </div>
+                        <ul class="skill-category__list">
+                            <li class="skill-item">Java</li>
+                            <li class="skill-item">C</li>
+                            <li class="skill-item">JavaScript</li>
+                            <li class="skill-item">SQL</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category reveal reveal-delay-3">
+                        <div class="skill-category__header">
+                            <span class="skill-category__number">02</span>
+                            <h3 class="skill-category__title">FRAMEWORKS</h3>
+                        </div>
+                        <ul class="skill-category__list">
+                            <li class="skill-item">Spring Boot</li>
+                            <li class="skill-item">Spring Security</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category reveal reveal-delay-3">
+                        <div class="skill-category__header">
+                            <span class="skill-category__number">03</span>
+                            <h3 class="skill-category__title">DATABASES</h3>
+                        </div>
+                        <ul class="skill-category__list">
+                            <li class="skill-item">PostgreSQL</li>
+                        </ul>
+                    </div>
+                    <div class="skill-category reveal reveal-delay-4">
+                        <div class="skill-category__header">
+                            <span class="skill-category__number">04</span>
+                            <h3 class="skill-category__title">DEVELOPER TOOLS</h3>
+                        </div>
+                        <ul class="skill-category__list">
+                            <li class="skill-item">Git</li>
+                            <li class="skill-item">GitHub</li>
+                            <li class="skill-item">Postman</li>
+                            <li class="skill-item">Swagger</li>
+                            <li class="skill-item">VS Code</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="showcase" id="projects">
+            <header class="header">
+                <div class="heading-area">
+                    <div class="eyebrow">PROJECT SHOWCASE / 04</div>
+                    <h1 class="heading">PROJECT<br><span>SHOWCASE.</span></h1>
+                </div>
+                <div class="project-marker" aria-label="Project showcase animation">
+                    <div class="marker-line"></div>
+                    <div class="reveal-blue"></div>
+                    <div class="reveal-project">
+                        <div class="reveal-label">SELECTED</div>
+                        <div class="reveal-count">02</div>
+                        <div class="reveal-title">WORK<br>ARCHIVE</div>
+                        <div class="reveal-orange"></div>
+                    </div>
+                    <div class="marker-number">04</div>
+                    <div class="marker-label">HOVER / REVEAL</div>
+                </div>
+            </header>
+            <div class="showcase-area">
+                <div class="project-track" id="projectTrack">
+                    <article class="project">
+                        <div class="project-card">
+                            <div class="background-number">01</div>
+                            <div class="card-top">
+                                <div class="project-number">PROJECT / 01</div>
+                                <div class="project-category">FULL STACK</div>
+                            </div>
+                            <div class="card-main">
+                                <h2 class="project-title">CINE<br>JUNCTION.</h2>
+                                <div class="project-subtitle">AI-POWERED MOVIE PLATFORM</div>
+                                <p class="description">Full-stack movie discovery and recommendation platform with secure authentication, advanced search, ratings, reviews and dynamic movie details.</p>
+                            </div>
+                            <div class="card-bottom">
+                                <div class="tech">
+                                    <span>JAVA</span>
+                                    <span>SPRING BOOT</span>
+                                    <span>POSTGRESQL</span>
+                                    <span>HTML</span>
+                                    <span>CSS</span>
+                                    <span>JAVASCRIPT</span>
+                                    <span>JWT</span>
+                                    <span>TMDB API</span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-dot"></div>
+                                    COMPLETED
+                                </div>
+                                <a href="https://github.com/TarunBonu547/CineJunction" target="_blank" rel="noopener noreferrer" class="view">
+                                    VIEW PROJECT <span>↗</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="project">
+                        <div class="project-card">
+                            <div class="background-number">02</div>
+                            <div class="card-top">
+                                <div class="project-number">PROJECT / 02</div>
+                                <div class="project-category">MACHINE LEARNING</div>
+                            </div>
+                            <div class="card-main">
+                                <h2 class="project-title">OFFROAD SEMANTIC<br>SEGMENTATION.</h2>
+                                <div class="project-subtitle">PREDICTIVE SYSTEM</div>
+                                <p class="description">Semantic segmentation project focused on pixel-level understanding of off-road environments using machine learning and computer vision techniques.</p>
+                            </div>
+                            <div class="card-bottom">
+                                <div class="tech">
+                                    <span>PYTHON</span>
+                                    <span>MACHINE LEARNING</span>
+                                    <span>COMPUTER VISION</span>
+                                    <span>SEMANTIC SEGMENTATION</span>
+                                    <span>DEEP LEARNING</span>
+                                </div>
+                                <div class="status">
+                                    <div class="status-dot"></div>
+                                    IN PROGRESS
+                                </div>
+                                <a href="https://github.com/TarunBonu547/Offroad-Semantic-Segmentation" target="_blank" rel="noopener noreferrer" class="view">
+                                    VIEW PROJECT <span>↗</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+            <div class="navigation">
+                <div class="slide-info" id="slideInfo">01 / 02 — CINEJUNCTION</div>
+                <div class="arrows">
+                    <button class="arrow" id="prev" type="button" disabled>←</button>
+                    <button class="arrow" id="next" type="button">→</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="certifications" id="certifications">
+            <div class="certifications__inner">
+                <div class="certifications__header">
+                    <div class="certifications__header-content">
+                        <p class="section-label reveal">CREDENTIALS / 04</p>
+                        <h2 class="certifications__title reveal reveal-delay-1">LEARNING<br>BEYOND<br>THE CLASSROOM.</h2>
+                        <p class="certifications__intro reveal reveal-delay-2">Continuous learning is part of how I build, experiment, and improve.</p>
+                    </div>
+                    <div class="credentials-certificate-animation reveal reveal-delay-3">
+                        <div class="grid"></div>
+                        <div class="label">CREDENTIALS / 04</div>
+                        <div class="system">
+                            <div class="shadow"></div>
+                            <div class="certificate certificate-back-1"></div>
+                            <div class="certificate certificate-back-2"></div>
+                            <div class="certificate certificate-main">
+                                <div class="cert-header">
+                                    <div class="cert-small">CERTIFICATE</div>
+                                    <div class="cert-number">01 / 04</div>
+                                </div>
+                                <div class="cert-title">CERTIFICATE</div>
+                                <div class="cert-line"></div>
+                                <div class="cert-description">SUCCESSFULLY COMPLETED</div>
+                                <div class="seal">VERIFIED</div>
+                                <div class="signature"></div>
+                                <div class="corner corner-1"></div>
+                                <div class="corner corner-2"></div>
+                                <div class="corner corner-3"></div>
+                                <div class="scan"></div>
+                            </div>
+                            <div class="float-mark float-1"></div>
+                            <div class="float-mark float-2"></div>
+                            <div class="float-mark float-3"></div>
+                        </div>
+                        <div class="bottom-label">VERIFIED / 04</div>
+                    </div>
+                </div>
+                <div class="certifications__list">
+                    <a href="assets/certificates/EduSkills_Gen_AI.pdf" target="_blank" rel="noopener noreferrer" class="certification reveal reveal-delay-2" aria-label="View Generative AI, Deep Learning & Language Models certificate">
+                        <div class="certification__main">
+                            <span class="certification__number">01</span>
+                            <div class="certification__info">
+                                <h3 class="certification__title">GENERATIVE AI, DEEP LEARNING & LANGUAGE MODELS</h3>
+                                <span class="certification__issuer">EduSkills Academy</span>
+                                <span class="certification__date">Issued: June 10, 2026</span>
+                                <span class="certification__duration">8 weeks</span>
+                            </div>
+                        </div>
+                        <div class="certification__meta">
+                            <span class="certification__status">COMPLETED</span>
+                            <span class="certification__arrow">VIEW ↗</span>
+                        </div>
+                    </a>
+                    <a href="assets/certificates/Amazon_Gen_AI.pdf" target="_blank" rel="noopener noreferrer" class="certification reveal reveal-delay-3" aria-label="View AWS Academy Graduate — Generative AI Foundations certificate">
+                        <div class="certification__main">
+                            <span class="certification__number">02</span>
+                            <div class="certification__info">
+                                <h3 class="certification__title">AWS ACADEMY GRADUATE — GENERATIVE AI FOUNDATIONS</h3>
+                                <span class="certification__issuer">AWS Academy</span>
+                                <span class="certification__date">Issued: August 16, 2026</span>
+                                <span class="certification__duration">12 hours</span>
+                            </div>
+                        </div>
+                        <div class="certification__meta">
+                            <span class="certification__status">COMPLETED</span>
+                            <span class="certification__arrow">VIEW ↗</span>
+                        </div>
+                    </a>
+                    <a href="assets/certificates/Amazon_Machine_learning.pdf" target="_blank" rel="noopener noreferrer" class="certification reveal reveal-delay-3" aria-label="View AWS Academy Graduate — Machine Learning Foundations certificate">
+                        <div class="certification__main">
+                            <span class="certification__number">03</span>
+                            <div class="certification__info">
+                                <h3 class="certification__title">AWS ACADEMY GRADUATE — MACHINE LEARNING FOUNDATIONS</h3>
+                                <span class="certification__issuer">AWS Academy</span>
+                                <span class="certification__date">Issued: August 11, 2026</span>
+                                <span class="certification__duration">20 hours</span>
+                            </div>
+                        </div>
+                        <div class="certification__meta">
+                            <span class="certification__status">COMPLETED</span>
+                            <span class="certification__arrow">VIEW ↗</span>
+                        </div>
+                    </a>
+                    <a href="assets/certificates/Amazon_Natural_Language_Processing.pdf" target="_blank" rel="noopener noreferrer" class="certification reveal reveal-delay-4" aria-label="View AWS Academy Graduate — Machine Learning for Natural Language Processing certificate">
+                        <div class="certification__main">
+                            <span class="certification__number">04</span>
+                            <div class="certification__info">
+                                <h3 class="certification__title">AWS ACADEMY GRADUATE — MACHINE LEARNING FOR NATURAL LANGUAGE PROCESSING</h3>
+                                <span class="certification__issuer">AWS Academy</span>
+                                <span class="certification__date">Issued: August 16, 2026</span>
+                                <span class="certification__duration">20 hours</span>
+                            </div>
+                        </div>
+                        <div class="certification__meta">
+                            <span class="certification__status">COMPLETED</span>
+                            <span class="certification__arrow">VIEW ↗</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="certifications__cta reveal reveal-delay-4">
+                    <a href="#" class="btn btn--secondary">VIEW ALL CREDENTIALS ↗</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume" id="resume">
+            <div class="resume__inner">
+                <div class="resume__content">
+                    <p class="section-label reveal">RESUME / 05</p>
+                    <h2 class="resume__title reveal reveal-delay-1">LET'S TALK<br>ABOUT WHAT<br>I CAN BUILD.</h2>
+                    <p class="resume__text reveal reveal-delay-2">A quick overview of my education, technical skills, projects, and experience is available in my resume.</p>
+                    <div class="resume__meta reveal reveal-delay-3">
+                        <span class="resume__meta-item">B.TECH STUDENT</span>
+                        <span class="resume__meta-item">SOFTWARE DEVELOPER</span>
+                        <span class="resume__meta-item">INDIA</span>
+                    </div>
+                    <div class="resume__actions reveal reveal-delay-3">
+                        <a href="assets/resume/Resume_Orig.pdf" target="_blank" rel="noopener noreferrer" class="btn btn--primary">VIEW RESUME ↗</a>
+                        <a href="assets/resume/Resume_Orig.pdf" download class="btn btn--secondary">DOWNLOAD RESUME ↓</a>
+                    </div>
+                    <p class="resume__file-info reveal reveal-delay-4">PDF / RESUME</p>
+                </div>
+                <div class="resume__visual reveal reveal-delay-2">
+                    <div class="resume__visual-inner">
+                        <div class="resume-visual" id="resumeVisual">
+                            <div class="resume-grid"></div>
+                            <div class="resume-cv-label">CV / RESUME</div>
+                            <div class="resume-number">05</div>
+                            <div class="resume-year">2026</div>
+                            <div class="resume-blue-block"></div>
+                            <div class="resume-orange-dot"></div>
+                            <div class="resume-document">
+                                <div class="resume-document-header">
+                                    <span>RESUME</span>
+                                    <span>01 / 01</span>
+                                </div>
+                                <div class="resume-document-title">CURRICULUM</div>
+                                <div class="resume-document-subtitle">PROFESSIONAL PROFILE</div>
+                                <div class="resume-document-lines">
+                                    <span class="resume-document-line"></span>
+                                    <span class="resume-document-line"></span>
+                                    <span class="resume-document-line"></span>
+                                    <span class="resume-document-line"></span>
+                                    <span class="resume-document-line"></span>
+                                    <span class="resume-document-line"></span>
+                                </div>
+                                <div class="resume-document-box"></div>
+                                <div class="resume-document-box resume-document-box--second"></div>
+                                <div class="resume-document-box resume-document-box--third"></div>
+                                <div class="resume-scanner"></div>
+                            </div>
+                            <div class="resume-approved">
+                                <div class="resume-approved-check">✓</div>
+                                <div class="resume-approved-title">RESUME</div>
+                                <div class="resume-approved-subtitle">APPROVED</div>
+                            </div>
+                            <div class="resume-status">HOVER TO INSPECT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section" id="contact">
+            <div class="contact-top">
+                <div class="section-label reveal">CONTACT / 06</div>
+                <div class="contact-index">LET'S TALK ↗</div>
+            </div>
+            <div class="contact-main">
+                <div class="contact-content">
+                    <h1 class="contact-heading">
+                        <span>HAVE AN</span>
+                        <span>IDEA?</span>
+                        <span class="outline">LET'S</span>
+                        <span>BUILD</span>
+                        <span>SOMETHING.</span>
+                    </h1>
+                    <p class="contact-description">Whether it's a project, an opportunity, a collaboration, or simply a conversation, I'd love to hear from you.</p>
+                    <div class="contact-links">
+                        <a class="contact-link" href="mailto:tarunbonu547@gmail.com">
+                            <span class="contact-link-label">EMAIL</span>
+                            <span class="contact-link-value">tarunbonu547@gmail.com <span class="arrow">↗</span></span>
+                        </a>
+                        <a class="contact-link" href="https://github.com/TarunBonu547" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-link-label">GITHUB</span>
+                            <span class="contact-link-value">TarunBonu547 <span class="arrow">↗</span></span>
+                        </a>
+                        <a class="contact-link" href="https://www.linkedin.com/in/bonu-tarun-38419a371/" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-link-label">LINKEDIN</span>
+                            <span class="contact-link-value">bonu-tarun-38419a371 <span class="arrow">↗</span></span>
+                        </a>
+                        <a class="contact-link" href="https://leetcode.com/u/tarunbonu547/" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-link-label">LEETCODE</span>
+                            <span class="contact-link-value">tarunbonu547 <span class="arrow">↗</span></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-visual">
+                    <div class="cv-visual" id="cvVisual">
+                        <div class="cv-number">06</div>
+                        <div class="cv-geometry">
+                            <div class="cv-orbit cv-orbit-1"></div>
+                            <div class="cv-orbit cv-orbit-2"></div>
+                            <div class="cv-orbit cv-orbit-3"></div>
+                            <div class="cv-orange-dot"></div>
+                        </div>
+                        <div class="cv-pulse"></div>
+                        <div class="cv-pulse cv-pulse-two"></div>
+                        <div class="cv-inner-pulse"></div>
+                        <div class="cv-blue-diamond"></div>
+                        <div class="cv-blue-marker"></div>
+                        <div class="cv-talk" id="cvTalk" tabindex="0" role="presentation">
+                            <span>LET'S</span>
+                            <span>TALK</span>
+                            <span class="cv-talk-arrow">↗</span>
+                        </div>
+                        <div class="cv-status">
+                            <span class="cv-idle-text">HOVER TO CONNECT</span>
+                            <span class="cv-active-text">CONNECTION ACTIVE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="mailto:tarunbonu547@gmail.com" class="contact-cta">
+                <div>SEND A<br>MESSAGE <span>↗</span></div>
+            </a>
+        </section>
+
+        <footer class="footer-section" id="footer">
+            <div class="footer-grid"></div>
+            <div class="footer-signal"></div>
+            <div class="footer-mark"></div>
+            <div class="footer-top">
+                <div class="footer-logo">TB.</div>
+                <a href="#" class="back-top">BACK TO TOP <span class="arrow">↑</span></a>
+            </div>
+            <div class="footer-main">
+                <div class="identity">
+                    <div class="identity-name">TARUN BONU</div>
+                    <div class="identity-role">SOFTWARE DEVELOPER</div>
+                </div>
+                <div class="footer-center">
+                    <div class="footer-center-label">PORTFOLIO</div>
+                    <div class="footer-center-year">2026</div>
+                </div>
+                <div class="footer-meta">
+                    <span>DESIGNED & BUILT</span>
+                    <span>BY TARUN BONU</span>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 TARUN BONU</span>
+                <span>BUILT WITH HTML / CSS / JS</span>
+            </div>
+        </footer>
+    </main>
+
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <div class="scroll-indicator" aria-hidden="true">
+        <span class="scroll-indicator__text">SCROLL TO EXPLORE</span>
+        <span class="scroll-indicator__line"></span>
+    </div>
+
+    <script src="js/script.js?v=20260817-2115"></script>
+</body>
+</html>

@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Project Showcase</title>
+
+<style>
+
+:root {
+    --bg: #f4f1ea;
+    --black: #111;
+    --muted: #74716a;
+    --line: rgba(17,17,17,.17);
+    --blue: #2d5bff;
+    --orange: #ff5b25;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    color: var(--black);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.showcase {
+
+    min-height: 100vh;
+
+    padding:
+        75px 5vw 55px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 60px;
+
+    padding-bottom: 42px;
+
+    border-bottom:
+        1px solid var(--line);
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.heading-area {
+    flex: 1;
+}
+
+.eyebrow {
+
+    font-family: monospace;
+
+    font-size: 11px;
+
+    letter-spacing: 3px;
+
+    color: var(--muted);
+
+    margin-bottom: 20px;
+}
+
+.heading {
+
+    font-size:
+        clamp(60px, 8vw, 120px);
+
+    line-height: .8;
+
+    letter-spacing: -.075em;
+
+    font-weight: 900;
+}
+
+.heading span {
+
+    color: transparent;
+
+    -webkit-text-stroke:
+        1px var(--black);
+}
+
+
+/* =========================================================
+   04 ANIMATION AREA
+========================================================= */
+
+.project-marker {
+
+    width: 230px;
+    height: 145px;
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    cursor: pointer;
+
+    overflow: visible;
+}
+
+
+/* =========================================================
+   MAIN 04
+========================================================= */
+
+.marker-number {
+
+    position: absolute;
+
+    right: 10px;
+    top: 0;
+
+    z-index: 20;
+
+    font-size:
+        118px;
+
+    line-height: .8;
+
+    font-weight: 900;
+
+    letter-spacing: -.1em;
+
+    color:
+        var(--black);
+
+    transition:
+        color .4s ease;
+}
+
+
+/* =========================================================
+   REVEAL PROJECT
+========================================================= */
+
+.reveal-project {
+
+    position: absolute;
+
+    right: 18px;
+    top: 28px;
+
+    width: 125px;
+    height: 88px;
+
+    border:
+        1px solid var(--black);
+
+    background:
+        var(--bg);
+
+    z-index: 10;
+
+    opacity: 0;
+
+    transform:
+        translateX(-25px)
+        translateY(12px)
+        rotate(-4deg)
+        scale(.8);
+
+    transition:
+        opacity .55s ease,
+
+        transform .75s
+        cubic-bezier(.22,1,.36,1);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   REVEAL PROJECT — BLUE BACK LAYER
+========================================================= */
+
+.reveal-blue {
+
+    position: absolute;
+
+    width: 125px;
+    height: 88px;
+
+    right: 7px;
+    top: 21px;
+
+    border:
+        1px solid var(--blue);
+
+    z-index: 5;
+
+    opacity: 0;
+
+    transform:
+        translateX(-10px)
+        rotate(5deg);
+
+    transition:
+        opacity .4s ease,
+
+        transform .7s
+        cubic-bezier(.22,1,.36,1);
+
+    transition-delay:
+        .08s;
+}
+
+
+/* =========================================================
+   REVEAL PROJECT — ORANGE STRIP
+========================================================= */
+
+.reveal-orange {
+
+    position: absolute;
+
+    left: 0;
+    bottom: 0;
+
+    width: 0;
+    height: 4px;
+
+    background:
+        var(--orange);
+
+    transition:
+        width .6s
+        cubic-bezier(.22,1,.36,1);
+
+    transition-delay:
+        .25s;
+}
+
+
+/* =========================================================
+   REVEAL TEXT
+========================================================= */
+
+.reveal-label {
+
+    position: absolute;
+
+    left: 14px;
+    top: 12px;
+
+    font-family:
+        monospace;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
+    color:
+        var(--muted);
+
+    opacity: 0;
+
+    transform:
+        translateY(7px);
+
+    transition:
+        opacity .4s ease,
+
+        transform .5s ease;
+
+    transition-delay:
+        .3s;
+}
+
+
+.reveal-title {
+
+    position: absolute;
+
+    left: 13px;
+    bottom: 17px;
+
+    font-size:
+        19px;
+
+    line-height: .8;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -.06em;
+
+    opacity: 0;
+
+    transform:
+        translateX(-12px);
+
+    transition:
+        opacity .45s ease,
+
+        transform .6s
+        cubic-bezier(.22,1,.36,1);
+
+    transition-delay:
+        .35s;
+}
+
+
+/* =========================================================
+   REVEAL NUMBER
+========================================================= */
+
+.reveal-count {
+
+    position: absolute;
+
+    right: 12px;
+    top: 12px;
+
+    font-family:
+        monospace;
+
+    font-size:
+        8px;
+
+    color:
+        var(--blue);
+
+    opacity: 0;
+
+    transition:
+        opacity .4s ease;
+
+    transition-delay:
+        .35s;
+}
+
+
+/* =========================================================
+   HOVER REVEAL
+========================================================= */
+
+.project-marker:hover .marker-number {
+
+    color:
+        var(--blue);
+}
+
+
+.project-marker:hover .reveal-project {
+
+    opacity:
+        1;
+
+    transform:
+        translateX(-42px)
+        translateY(20px)
+        rotate(-2deg)
+        scale(1);
+}
+
+
+.project-marker:hover .reveal-blue {
+
+    opacity:
+        .65;
+
+    transform:
+        translateX(-18px)
+        rotate(5deg);
+}
+
+
+.project-marker:hover .reveal-orange {
+
+    width:
+        100%;
+}
+
+
+.project-marker:hover .reveal-label {
+
+    opacity:
+        1;
+
+    transform:
+        translateY(0);
+}
+
+
+.project-marker:hover .reveal-title {
+
+    opacity:
+        1;
+
+    transform:
+        translateX(0);
+}
+
+
+.project-marker:hover .reveal-count {
+
+    opacity:
+        1;
+}
+
+
+/* =========================================================
+   SMALL MARKS
+========================================================= */
+
+.marker-line {
+
+    position: absolute;
+
+    left: 0;
+
+    top: 50%;
+
+    width: 0;
+
+    height: 1px;
+
+    background:
+        var(--black);
+
+    transition:
+        width .7s
+        cubic-bezier(.22,1,.36,1);
+}
+
+
+.project-marker:hover .marker-line {
+
+    width:
+        80px;
+}
+
+
+/* =========================================================
+   MARKER LABEL
+========================================================= */
+
+.marker-label {
+
+    position: absolute;
+
+    right: 0;
+
+    bottom: 0;
+
+    font-family:
+        monospace;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+    color:
+        var(--muted);
+
+    transition:
+        color .35s ease,
+
+        transform .4s ease;
+}
+
+
+.project-marker:hover .marker-label {
+
+    color:
+        var(--black);
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =========================================================
+   PROJECT SHOWCASE
+========================================================= */
+
+.showcase-area {
+
+    flex: 1;
+
+    margin-top:
+        35px;
+
+    overflow:
+        hidden;
+
+    position:
+        relative;
+}
+
+
+/* =========================================================
+   PROJECT TRACK
+========================================================= */
+
+.project-track {
+
+    display:
+        flex;
+
+    width:
+        200%;
+
+    transition:
+        transform .9s
+        cubic-bezier(.77,0,.175,1);
+}
+
+
+.project {
+
+    width:
+        50%;
+
+    flex-shrink:
+        0;
+
+    padding-right:
+        25px;
+}
+
+
+/* =========================================================
+   PROJECT CARD
+========================================================= */
+
+.project-card {
+
+    min-height:
+        525px;
+
+    position:
+        relative;
+
+    overflow:
+        hidden;
+
+    padding:
+        40px 45px;
+
+    border:
+        1px solid var(--line);
+
+    background:
+        rgba(255,255,255,.08);
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    justify-content:
+        space-between;
+
+    transition:
+        border-color .4s ease,
+
+        background .4s ease,
+
+        transform .4s ease;
+}
+
+
+.project-card:hover {
+
+    border-color:
+        rgba(45,91,255,.4);
+
+    background:
+        rgba(45,91,255,.025);
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =========================================================
+   BACKGROUND NUMBER
+========================================================= */
+
+.background-number {
+
+    position:
+        absolute;
+
+    right:
+        -20px;
+
+    bottom:
+        -55px;
+
+    font-size:
+        clamp(180px,25vw,390px);
+
+    line-height:
+        .7;
+
+    font-weight:
+        900;
+
+    letter-spacing:
+        -.1em;
+
+    color:
+        rgba(17,17,17,.035);
+
+    pointer-events:
+        none;
+
+    transition:
+        color .5s ease,
+
+        transform .5s ease;
+}
+
+
+.project-card:hover
+.background-number {
+
+    color:
+        rgba(45,91,255,.045);
+
+    transform:
+        translateX(-15px);
+}
+
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.card-top {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+}
+
+
+.project-number {
+
+    font-family:
+        monospace;
+
+    font-size:
+        13px;
+
+    letter-spacing:
+        2px;
+
+    color:
+        var(--blue);
+}
+
+
+.project-category {
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        2px;
+
+    color:
+        var(--muted);
+}
+
+
+/* =========================================================
+   CARD MAIN
+========================================================= */
+
+.card-main {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+}
+
+
+.project-title {
+
+    font-size:
+        clamp(62px,8vw,125px);
+
+    line-height:
+        .75;
+
+    letter-spacing:
+        -.08em;
+
+    font-weight:
+        900;
+
+    margin-bottom:
+        25px;
+
+    transition:
+        color .4s ease,
+
+        transform .4s ease;
+}
+
+
+.project-card:hover
+.project-title {
+
+    color:
+        var(--blue);
+
+    transform:
+        translateX(4px);
+}
+
+
+.project-subtitle {
+
+    font-family:
+        monospace;
+
+    font-size:
+        11px;
+
+    letter-spacing:
+        2px;
+
+    color:
+        var(--muted);
+
+    margin-bottom:
+        18px;
+}
+
+
+.description {
+
+    max-width:
+        720px;
+
+    font-size:
+        clamp(16px,1.7vw,21px);
+
+    line-height:
+        1.5;
+
+    color:
+        var(--muted);
+}
+
+
+/* =========================================================
+   CARD BOTTOM
+========================================================= */
+
+.card-bottom {
+
+    position:
+        relative;
+
+    z-index:
+        2;
+
+    border-top:
+        1px solid var(--line);
+
+    padding-top:
+        20px;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        flex-end;
+
+    gap:
+        25px;
+}
+
+
+/* =========================================================
+   TECHNOLOGIES
+========================================================= */
+
+.tech {
+
+    display:
+        flex;
+
+    flex-wrap:
+        wrap;
+
+    gap:
+        7px;
+
+    max-width:
+        650px;
+}
+
+
+.tech span {
+
+    border:
+        1px solid var(--line);
+
+    padding:
+        8px 11px;
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        1px;
+
+    transition:
+        color .3s ease,
+
+        border-color .3s ease,
+
+        transform .3s ease;
+}
+
+
+.tech span:hover {
+
+    color:
+        var(--blue);
+
+    border-color:
+        var(--blue);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        9px;
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        1.5px;
+
+    white-space:
+        nowrap;
+}
+
+
+.status-dot {
+
+    width:
+        8px;
+
+    height:
+        8px;
+
+    border-radius:
+        50%;
+
+    background:
+        var(--orange);
+
+    animation:
+        statusPulse
+        2s
+        ease-in-out
+        infinite;
+}
+
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+
+        box-shadow:
+            0 0 0 0
+            rgba(255,91,37,.2);
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 0 7px
+            rgba(255,91,37,0);
+    }
+}
+
+
+/* =========================================================
+   VIEW
+========================================================= */
+
+.view {
+
+    width:
+        165px;
+
+    height:
+        48px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    padding:
+        0 16px;
+
+    background:
+        var(--black);
+
+    color:
+        var(--bg);
+
+    text-decoration:
+        none;
+
+    font-family:
+        monospace;
+
+    font-size:
+        9px;
+
+    letter-spacing:
+        2px;
+
+    transition:
+        background .3s ease,
+
+        transform .3s ease;
+}
+
+
+.view span {
+
+    font-size:
+        17px;
+}
+
+
+.view:hover {
+
+    background:
+        var(--blue);
+
+    transform:
+        translateY(-3px);
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.navigation {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        space-between;
+
+    margin-top:
+        18px;
+
+    border-top:
+        1px solid var(--line);
+
+    padding-top:
+        17px;
+}
+
+
+.slide-info {
+
+    font-family:
+        monospace;
+
+    font-size:
+        10px;
+
+    letter-spacing:
+        2px;
+
+    color:
+        var(--muted);
+}
+
+
+.arrows {
+
+    display:
+        flex;
+
+    gap:
+        7px;
+}
+
+
+.arrow {
+
+    width:
+        48px;
+
+    height:
+        40px;
+
+    border:
+        1px solid var(--line);
+
+    background:
+        transparent;
+
+    cursor:
+        pointer;
+
+    font-size:
+        17px;
+
+    transition:
+        .3s ease;
+}
+
+
+.arrow:hover:not(:disabled) {
+
+    background:
+        var(--black);
+
+    color:
+        var(--bg);
+
+    border-color:
+        var(--black);
+}
+
+
+.arrow:disabled {
+
+    opacity:
+        .25;
+
+    cursor:
+        default;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .showcase {
+
+        padding:
+            55px 25px;
+    }
+
+
+    .header {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+
+        gap:
+            40px;
+    }
+
+
+    .project-marker {
+
+        align-self:
+            flex-end;
+
+        transform:
+            scale(.9);
+
+        transform-origin:
+            right center;
+    }
+
+
+    .project-card {
+
+        min-height:
+            600px;
+
+        padding:
+            30px;
+    }
+
+
+    .card-bottom {
+
+        flex-direction:
+            column;
+
+        align-items:
+            flex-start;
+    }
+
+
+    .view {
+
+        width:
+            100%;
+    }
+}
+
+
+@media (max-width: 500px) {
+
+    .heading {
+
+        font-size:
+            62px;
+    }
+
+
+    .project-title {
+
+        font-size:
+            56px;
+    }
+
+
+    .project-card {
+
+        padding:
+            25px;
+    }
+
+
+    .project-marker {
+
+        transform:
+            scale(.8);
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<section class="showcase">
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+
+        <!-- HEADING -->
+
+        <div class="heading-area">
+
+            <div class="eyebrow">
+                PROJECT SHOWCASE / 04
+            </div>
+
+            <h1 class="heading">
+                PROJECT<br>
+                <span>SHOWCASE.</span>
+            </h1>
+
+        </div>
+
+
+        <!-- =================================================
+             04 HOVER REVEAL
+        ================================================== -->
+
+        <div
+            class="project-marker"
+            aria-label="Project showcase animation"
+        >
+
+
+            <!-- line -->
+
+            <div class="marker-line"></div>
+
+
+            <!-- revealed blue layer -->
+
+            <div class="reveal-blue"></div>
+
+
+            <!-- revealed project -->
+
+            <div class="reveal-project">
+
+                <div class="reveal-label">
+                    SELECTED
+                </div>
+
+
+                <div class="reveal-count">
+                    02
+                </div>
+
+
+                <div class="reveal-title">
+                    WORK<br>
+                    ARCHIVE
+                </div>
+
+
+                <div class="reveal-orange"></div>
+
+            </div>
+
+
+            <!-- main number -->
+
+            <div class="marker-number">
+                04
+            </div>
+
+
+            <!-- label -->
+
+            <div class="marker-label">
+                HOVER / REVEAL
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         PROJECT CARDS
+    ====================================================== -->
+
+    <div class="showcase-area">
+
+
+        <div
+            class="project-track"
+            id="projectTrack"
+        >
+
+
+            <!-- =================================================
+                 PROJECT 01
+            ================================================== -->
+
+            <article class="project">
+
+
+                <div class="project-card">
+
+
+                    <div class="background-number">
+                        01
+                    </div>
+
+
+                    <div class="card-top">
+
+                        <div class="project-number">
+                            PROJECT / 01
+                        </div>
+
+                        <div class="project-category">
+                            FULL STACK
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-main">
+
+                        <h2 class="project-title">
+                            CINE<br>
+                            JUNCTION.
+                        </h2>
+
+
+                        <div class="project-subtitle">
+                            AI-POWERED MOVIE PLATFORM
+                        </div>
+
+
+                        <p class="description">
+                            A full-stack movie discovery and
+                            recommendation platform featuring
+                            secure authentication, advanced
+                            search, ratings, reviews and
+                            intelligent recommendations.
+                        </p>
+
+                    </div>
+
+
+                    <div class="card-bottom">
+
+
+                        <div class="tech">
+
+                            <span>JAVA</span>
+
+                            <span>SPRING BOOT</span>
+
+                            <span>POSTGRESQL</span>
+
+                            <span>JAVASCRIPT</span>
+
+                            <span>JWT</span>
+
+                            <span>TMDB API</span>
+
+                        </div>
+
+
+                        <div class="status">
+
+                            <div class="status-dot"></div>
+
+                            COMPLETED
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="view"
+                        >
+
+                            VIEW PROJECT
+
+                            <span>↗</span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 PROJECT 02
+            ================================================== -->
+
+            <article class="project">
+
+
+                <div class="project-card">
+
+
+                    <div class="background-number">
+                        02
+                    </div>
+
+
+                    <div class="card-top">
+
+                        <div class="project-number">
+                            PROJECT / 02
+                        </div>
+
+                        <div class="project-category">
+                            MACHINE LEARNING
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-main">
+
+                        <h2 class="project-title">
+                            YOUR<br>
+                            PROJECT.
+                        </h2>
+
+
+                        <div class="project-subtitle">
+                            YOUR ACTUAL PROJECT NAME
+                        </div>
+
+
+                        <p class="description">
+                            Replace this description with the
+                            actual story of your machine learning
+                            project, including the problem,
+                            approach and outcome.
+                        </p>
+
+                    </div>
+
+
+                    <div class="card-bottom">
+
+
+                        <div class="tech">
+
+                            <span>PYTHON</span>
+
+                            <span>PANDAS</span>
+
+                            <span>NUMPY</span>
+
+                            <span>SCIKIT-LEARN</span>
+
+                        </div>
+
+
+                        <div class="status">
+
+                            <div class="status-dot"></div>
+
+                            IN PROGRESS
+
+                        </div>
+
+
+                        <a
+                            href="#"
+                            class="view"
+                        >
+
+                            VIEW PROJECT
+
+                            <span>↗</span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+
+    <div class="navigation">
+
+
+        <div
+            class="slide-info"
+            id="slideInfo"
+        >
+            01 / 02 — CINEJUNCTION
+        </div>
+
+
+        <div class="arrows">
+
+
+            <button
+                class="arrow"
+                id="prev"
+                type="button"
+                disabled
+            >
+                ←
+            </button>
+
+
+            <button
+                class="arrow"
+                id="next"
+                type="button"
+            >
+                →
+            </button>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/* =========================================================
+   PROJECT SLIDER
+========================================================= */
+
+const track =
+    document.getElementById(
+        "projectTrack"
+    );
+
+const prev =
+    document.getElementById(
+        "prev"
+    );
+
+const next =
+    document.getElementById(
+        "next"
+    );
+
+const slideInfo =
+    document.getElementById(
+        "slideInfo"
+    );
+
+
+let current = 0;
+
+
+const projectNames = [
+    "CINEJUNCTION",
+    "YOUR PROJECT"
+];
+
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function updateSlider() {
+
+    track.style.transform =
+        `translateX(-${current * 50}%)`;
+
+
+    prev.disabled =
+        current === 0;
+
+
+    next.disabled =
+        current ===
+        projectNames.length - 1;
+
+
+    slideInfo.textContent =
+        `${String(current + 1).padStart(2,"0")} / ` +
+        `${String(projectNames.length).padStart(2,"0")} — ` +
+        `${projectNames[current]}`;
+}
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+next.addEventListener(
+    "click",
+    () => {
+
+        if (
+            current <
+            projectNames.length - 1
+        ) {
+
+            current++;
+
+            updateSlider();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PREVIOUS
+========================================================= */
+
+prev.addEventListener(
+    "click",
+    () => {
+
+        if (current > 0) {
+
+            current--;
+
+            updateSlider();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "ArrowRight" &&
+            current <
+            projectNames.length - 1
+        ) {
+
+            current++;
+
+            updateSlider();
+        }
+
+
+        if (
+            event.key === "ArrowLeft" &&
+            current > 0
+        ) {
+
+            current--;
+
+            updateSlider();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TOUCH SWIPE
+========================================================= */
+
+let touchStartX = 0;
+
+
+track.addEventListener(
+    "touchstart",
+    event => {
+
+        touchStartX =
+            event.touches[0].clientX;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+track.addEventListener(
+    "touchend",
+    event => {
+
+        const touchEndX =
+            event.changedTouches[0].clientX;
+
+        const distance =
+            touchEndX -
+            touchStartX;
+
+
+        if (
+            Math.abs(distance) < 60
+        ) {
+
+            return;
+        }
+
+
+        if (
+            distance < 0 &&
+            current <
+            projectNames.length - 1
+        ) {
+
+            current++;
+
+        }
+        else if (
+            distance > 0 &&
+            current > 0
+        ) {
+
+            current--;
+
+        }
+
+
+        updateSlider();
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+updateSlider();
+
+</script>
+
+</body>
+</html>

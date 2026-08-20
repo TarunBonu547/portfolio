@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Contact Animation V5</title>
+
+<style>
+
+:root {
+    --cream: #f4f1ea;
+    --black: #111111;
+    --blue: #2857ff;
+    --orange: #ff5a1f;
+    --muted: #77736b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    background: var(--cream);
+    color: var(--black);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CONTACT SECTION
+========================================================= */
+
+.contact {
+    position: relative;
+
+    width: 100%;
+    height: 100vh;
+
+    overflow: hidden;
+
+    padding: 25px 4vw;
+}
+
+
+/* =========================================================
+   SECTION LABEL
+========================================================= */
+
+.section-label {
+    position: absolute;
+
+    top: 20px;
+    left: 4vw;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    letter-spacing: 3px;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.heading {
+    position: absolute;
+
+    top: 75px;
+    left: 4vw;
+
+    z-index: 5;
+
+    font-size:
+        clamp(65px, 8vw, 145px);
+
+    line-height: .82;
+
+    letter-spacing: -.065em;
+
+    font-weight: 900;
+
+    text-transform: uppercase;
+}
+
+.heading .outline {
+    color: transparent;
+
+    -webkit-text-stroke:
+        1.5px var(--black);
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.description {
+    position: absolute;
+
+    left: 4vw;
+    bottom: 38px;
+
+    max-width: 680px;
+
+    font-size: 18px;
+
+    line-height: 1.55;
+
+    color: var(--muted);
+
+    z-index: 5;
+}
+
+
+/* =========================================================
+   VISUAL
+========================================================= */
+
+.visual {
+    position: absolute;
+
+    right: 5vw;
+    top: 50%;
+
+    width: 500px;
+    height: 500px;
+
+    transform:
+        translateY(-50%);
+
+    isolation: isolate;
+}
+
+
+/* =========================================================
+   LARGE 06
+========================================================= */
+
+.number {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+
+    font-size: 260px;
+
+    line-height: .8;
+
+    font-weight: 900;
+
+    letter-spacing: -.1em;
+
+    color:
+        rgba(17,17,17,.105);
+
+    user-select: none;
+
+    z-index: 1;
+
+    transition:
+        transform .5s
+        cubic-bezier(.2,.8,.2,1),
+
+        color .4s ease;
+}
+
+
+/* =========================================================
+   GEOMETRY
+========================================================= */
+
+.geometry {
+    position: absolute;
+
+    inset: 0;
+
+    animation:
+        idleRotate
+        30s
+        linear
+        infinite;
+
+    transition:
+        animation-duration .8s;
+}
+
+@keyframes idleRotate {
+
+    from {
+        transform:
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   ORBITS
+========================================================= */
+
+.orbit {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(17,17,17,.12);
+
+    transform:
+        translate(-50%, -50%);
+}
+
+.orbit-1 {
+    width: 420px;
+    height: 420px;
+}
+
+.orbit-2 {
+    width: 365px;
+    height: 190px;
+}
+
+.orbit-3 {
+    width: 310px;
+    height: 310px;
+
+    border-color:
+        rgba(40,87,255,.16);
+
+    transform:
+        translate(-50%, -50%)
+        rotate(45deg);
+}
+
+
+/* =========================================================
+   LET'S TALK
+   THIS IS THE ONLY HOVER TRIGGER
+========================================================= */
+
+.talk {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 105px;
+    height: 105px;
+
+    transform:
+        translate(-50%, -50%);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    background:
+        var(--blue);
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    z-index: 30;
+
+    /*
+     * IMPORTANT:
+     * Only this element receives pointer events.
+     */
+    cursor: pointer;
+
+    transition:
+        width .5s
+        cubic-bezier(.2,.8,.2,1),
+
+        height .5s
+        cubic-bezier(.2,.8,.2,1),
+
+        transform .5s
+        cubic-bezier(.2,.8,.2,1),
+
+        background .4s ease;
+}
+
+.talk-arrow {
+    font-size: 15px;
+
+    transition:
+        transform .4s ease;
+}
+
+
+/* =========================================================
+   ORANGE DOT
+========================================================= */
+
+.orange-dot {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 12px;
+    height: 12px;
+
+    margin-left: 205px;
+    margin-top: -6px;
+
+    border-radius: 50%;
+
+    background:
+        var(--orange);
+
+    z-index: 20;
+
+    transition:
+        transform .4s ease,
+
+        box-shadow .4s ease;
+}
+
+
+/* =========================================================
+   BLUE DIAMOND
+========================================================= */
+
+.blue-diamond {
+    position: absolute;
+
+    left: 17%;
+    top: 29%;
+
+    width: 18px;
+    height: 18px;
+
+    background:
+        var(--blue);
+
+    transform:
+        rotate(45deg);
+
+    z-index: 10;
+
+    animation:
+        diamondFloat
+        4s
+        ease-in-out
+        infinite;
+
+    transition:
+        transform .5s ease;
+}
+
+@keyframes diamondFloat {
+
+    0%,
+    100% {
+        margin-top: 0;
+    }
+
+    50% {
+        margin-top: -8px;
+    }
+}
+
+
+/* =========================================================
+   BLUE MARKER
+========================================================= */
+
+.blue-marker {
+    position: absolute;
+
+    right: 8%;
+    bottom: 25%;
+
+    width: 14px;
+    height: 14px;
+
+    background:
+        var(--blue);
+
+    transform:
+        rotate(5deg);
+
+    z-index: 10;
+}
+
+
+/* =========================================================
+   SIGNAL PULSE
+========================================================= */
+
+.pulse {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 95px;
+    height: 95px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.5);
+
+    border:
+        1px solid
+        var(--blue);
+
+    border-radius: 50%;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 5;
+}
+
+
+/*
+ * Continuous animation ONLY while
+ * the .talk button is hovered.
+ */
+
+.visual.talk-active .pulse {
+    animation:
+        continuousPulse
+        2.4s
+        cubic-bezier(.2,.7,.2,1)
+        infinite;
+}
+
+.visual.talk-active .pulse-two {
+    animation-delay:
+        1.2s;
+}
+
+
+@keyframes continuousPulse {
+
+    0% {
+        transform:
+            translate(-50%, -50%)
+            scale(.5);
+
+        opacity: .65;
+    }
+
+    100% {
+        transform:
+            translate(-50%, -50%)
+            scale(4);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   INNER PULSE
+========================================================= */
+
+.inner-pulse {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 115px;
+    height: 115px;
+
+    transform:
+        translate(-50%, -50%);
+
+    border:
+        1px solid
+        rgba(40,87,255,.22);
+
+    border-radius: 50%;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 4;
+}
+
+.visual.talk-active .inner-pulse {
+
+    animation:
+        innerSignal
+        1.8s
+        ease-in-out
+        infinite;
+}
+
+@keyframes innerSignal {
+
+    0%,
+    100% {
+        transform:
+            translate(-50%, -50%)
+            scale(.85);
+
+        opacity: .1;
+    }
+
+    50% {
+        transform:
+            translate(-50%, -50%)
+            scale(1.15);
+
+        opacity: .5;
+    }
+}
+
+
+/* =========================================================
+   ACTIVE STATE
+========================================================= */
+
+/*
+ * The animation is activated ONLY when
+ * the LET'S TALK square has the
+ * talk-active class.
+ */
+
+.visual.talk-active .geometry {
+
+    animation-duration:
+        12s;
+}
+
+.visual.talk-active .number {
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.025);
+
+    color:
+        rgba(17,17,17,.13);
+}
+
+.visual.talk-active .talk {
+
+    width: 112px;
+    height: 112px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.04);
+
+    background:
+        var(--black);
+}
+
+.visual.talk-active .talk-arrow {
+
+    transform:
+        translate(4px, -4px);
+}
+
+.visual.talk-active .orange-dot {
+
+    transform:
+        scale(1.35);
+
+    box-shadow:
+        0 0 18px
+        rgba(255,90,31,.35);
+}
+
+.visual.talk-active .blue-diamond {
+
+    transform:
+        rotate(45deg)
+        scale(1.12);
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+    position: absolute;
+
+    left: 50%;
+
+    top: calc(50% + 78px);
+
+    transform:
+        translateX(-50%);
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    color:
+        var(--muted);
+
+    white-space: nowrap;
+
+    z-index: 25;
+
+    transition:
+        color .35s ease;
+}
+
+.status .active-text {
+    display: none;
+}
+
+.visual.talk-active .status {
+
+    color:
+        var(--blue);
+}
+
+.visual.talk-active .status .idle-text {
+    display: none;
+}
+
+.visual.talk-active .status .active-text {
+    display: inline;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .visual {
+
+        right: 0;
+
+        transform:
+            translateY(-50%)
+            scale(.82);
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .heading {
+
+        left: 20px;
+        top: 65px;
+    }
+
+    .section-label {
+
+        left: 20px;
+    }
+
+    .description {
+
+        left: 20px;
+        right: 20px;
+        bottom: 25px;
+
+        font-size: 16px;
+    }
+
+    .visual {
+
+        left: 50%;
+        right: auto;
+
+        top: 56%;
+
+        transform:
+            translate(-50%, -50%)
+            scale(.62);
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .geometry,
+    .blue-diamond,
+    .pulse,
+    .inner-pulse {
+
+        animation: none !important;
+    }
+
+    .number,
+    .talk,
+    .orange-dot,
+    .blue-diamond {
+
+        transition: none;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<section class="contact">
+
+
+    <!-- =====================================================
+         SECTION LABEL
+    ====================================================== -->
+
+    <div class="section-label">
+        CONTACT / 06
+    </div>
+
+
+    <!-- =====================================================
+         MAIN HEADING
+    ====================================================== -->
+
+    <h1 class="heading">
+
+        HAVE AN<br>
+
+        <span class="outline">
+            IDEA? LET'S
+        </span><br>
+
+        BUILD<br>
+
+        SOMETHING.
+
+    </h1>
+
+
+    <!-- =====================================================
+         DESCRIPTION
+    ====================================================== -->
+
+    <p class="description">
+
+        Whether it's a project, an opportunity,
+        a collaboration, or simply a conversation,
+        I'd love to hear from you.
+
+    </p>
+
+
+    <!-- =====================================================
+         VISUAL
+    ====================================================== -->
+
+    <div
+        class="visual"
+        id="visual"
+    >
+
+
+        <!-- LARGE 06 -->
+
+        <div class="number">
+            06
+        </div>
+
+
+        <!-- =================================================
+             GEOMETRY
+        ================================================== -->
+
+        <div class="geometry">
+
+            <div class="orbit orbit-1"></div>
+
+            <div class="orbit orbit-2"></div>
+
+            <div class="orbit orbit-3"></div>
+
+            <div class="orange-dot"></div>
+
+        </div>
+
+
+        <!-- =================================================
+             PULSES
+        ================================================== -->
+
+        <div class="pulse"></div>
+
+        <div class="pulse pulse-two"></div>
+
+        <div class="inner-pulse"></div>
+
+
+        <!-- =================================================
+             DECORATIVE ELEMENTS
+        ================================================== -->
+
+        <div class="blue-diamond"></div>
+
+        <div class="blue-marker"></div>
+
+
+        <!-- =================================================
+             ONLY HOVER TRIGGER
+        ================================================== -->
+
+        <div
+            class="talk"
+            id="talk"
+            tabindex="0"
+            role="presentation"
+        >
+
+            <span>
+                LET'S
+            </span>
+
+            <span>
+                TALK
+            </span>
+
+            <span class="talk-arrow">
+                ↗
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             STATUS
+        ================================================== -->
+
+        <div class="status">
+
+            <span class="idle-text">
+                HOVER TO CONNECT
+            </span>
+
+            <span class="active-text">
+                CONNECTION ACTIVE
+            </span>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<script>
+
+/*
+============================================================
+IMPORTANT INTERACTION LOGIC
+============================================================
+
+The previous version attached hover events to:
+
+    .visual
+
+That meant hovering ANYWHERE inside the 500x500 visual
+activated the animation.
+
+This version attaches the interaction ONLY to:
+
+    #talk
+
+Therefore:
+
+✓ Hover 06          → nothing
+✓ Hover orbit       → nothing
+✓ Hover orange dot  → nothing
+✓ Hover empty area  → nothing
+✓ Hover LET'S TALK  → animation starts
+✓ Stay on LET'S TALK → animation continues
+✓ Leave LET'S TALK  → animation stops
+============================================================
+*/
+
+
+const visual =
+    document.getElementById("visual");
+
+const talk =
+    document.getElementById("talk");
+
+
+/* =========================================================
+   START WHEN ONLY THE BLUE SQUARE IS HOVERED
+========================================================= */
+
+talk.addEventListener(
+    "mouseenter",
+    () => {
+
+        visual.classList.add("talk-active");
+
+    }
+);
+
+
+/* =========================================================
+   STOP WHEN POINTER LEAVES THE BLUE SQUARE
+========================================================= */
+
+talk.addEventListener(
+    "mouseleave",
+    () => {
+
+        visual.classList.remove("talk-active");
+
+    }
+);
+
+
+/* =========================================================
+   KEYBOARD ACCESSIBILITY
+========================================================= */
+
+talk.addEventListener(
+    "focus",
+    () => {
+
+        visual.classList.add("talk-active");
+
+    }
+);
+
+talk.addEventListener(
+    "blur",
+    () => {
+
+        visual.classList.remove("talk-active");
+
+    }
+);
+
+</script>
+
+</body>
+</html>

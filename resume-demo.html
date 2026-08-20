@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Resume Verification Animation</title>
+
+<style>
+:root {
+    --cream: #f4f1ea;
+    --black: #111111;
+    --blue: #2857ff;
+    --orange: #ff5a1f;
+    --muted: #77736b;
+    --line: rgba(17,17,17,.16);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--cream);
+    color: var(--black);
+
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   DEMO
+===================================================== */
+
+.resume-demo {
+    width: min(720px, 94vw);
+    height: min(650px, 90vh);
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: var(--cream);
+}
+
+
+/* =====================================================
+   LABEL
+===================================================== */
+
+.section-label {
+    position: absolute;
+
+    top: 25px;
+    left: 25px;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    letter-spacing: 2.5px;
+
+    color: var(--muted);
+
+    z-index: 20;
+}
+
+
+/* =====================================================
+   VISUAL
+===================================================== */
+
+.visual {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 430px;
+    height: 430px;
+
+    transform:
+        translate(-50%, -50%);
+
+    perspective: 1000px;
+
+    transition:
+        transform .18s ease-out;
+}
+
+
+/* =====================================================
+   BACK GRID
+===================================================== */
+
+.grid {
+    position: absolute;
+
+    inset: 40px;
+
+    background-image:
+        linear-gradient(
+            rgba(17,17,17,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(17,17,17,.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 25px 25px;
+
+    transform:
+        rotate(45deg);
+
+    opacity: .7;
+}
+
+
+/* =====================================================
+   LARGE 05
+===================================================== */
+
+.number {
+    position: absolute;
+
+    left: 50%;
+    top: 45%;
+
+    transform:
+        translate(-50%, -50%);
+
+    font-size: 255px;
+
+    line-height: .8;
+
+    font-weight: 900;
+
+    letter-spacing: -.1em;
+
+    color:
+        rgba(17,17,17,.11);
+
+    user-select: none;
+
+    transition:
+        opacity .35s ease,
+        transform .55s cubic-bezier(.2,.8,.2,1);
+}
+
+
+/* =====================================================
+   CV LABEL
+===================================================== */
+
+.cv-label {
+    position: absolute;
+
+    left: 50%;
+    top: 15%;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 3px;
+
+    color: var(--muted);
+
+    white-space: nowrap;
+
+    transition:
+        opacity .3s ease;
+}
+
+
+/* =====================================================
+   YEAR
+===================================================== */
+
+.year {
+    position: absolute;
+
+    left: 50%;
+    top: 62%;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    color: var(--muted);
+
+    transition:
+        opacity .3s ease;
+}
+
+
+/* =====================================================
+   BLUE BLOCK
+===================================================== */
+
+.blue-block {
+    position: absolute;
+
+    width: 75px;
+    height: 75px;
+
+    left: 27%;
+    bottom: 23%;
+
+    background:
+        rgba(40,87,255,.15);
+
+    transition:
+        opacity .35s ease,
+        transform .5s ease;
+}
+
+
+/* =====================================================
+   ORANGE DOT
+===================================================== */
+
+.orange-dot {
+    position: absolute;
+
+    width: 12px;
+    height: 12px;
+
+    right: 23%;
+    top: 38%;
+
+    border-radius: 50%;
+
+    background:
+        var(--orange);
+
+    transition:
+        background .3s ease,
+        transform .3s ease;
+}
+
+
+/* =====================================================
+   DOCUMENT
+===================================================== */
+
+.document {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 220px;
+    height: 285px;
+
+    transform:
+        translate(-50%, -45%)
+        rotateX(10deg)
+        rotateY(-5deg)
+        scale(.7);
+
+    background:
+        #faf8f2;
+
+    border:
+        1px solid
+        rgba(17,17,17,.35);
+
+    box-shadow:
+        12px 15px 0
+        rgba(17,17,17,.06);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    z-index: 10;
+
+    transition:
+        opacity .45s ease,
+        transform .7s cubic-bezier(.2,.8,.2,1),
+        visibility 0s linear .7s;
+}
+
+
+/* Inner document border */
+
+.document::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 10px;
+
+    border:
+        1px solid
+        rgba(17,17,17,.13);
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   DOCUMENT CONTENT
+===================================================== */
+
+.document-header {
+    position: absolute;
+
+    left: 25px;
+    right: 25px;
+    top: 23px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: var(--muted);
+}
+
+.document-title {
+    position: absolute;
+
+    left: 25px;
+    top: 62px;
+
+    font-size: 17px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+.document-subtitle {
+    position: absolute;
+
+    left: 25px;
+    top: 88px;
+
+    font-size: 7px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   DOCUMENT LINES
+===================================================== */
+
+.document-lines {
+    position: absolute;
+
+    left: 25px;
+    right: 25px;
+    top: 120px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.document-line {
+    height: 3px;
+
+    background:
+        rgba(17,17,17,.13);
+
+    transform-origin:
+        left;
+
+    transform:
+        scaleX(.1);
+
+    transition:
+        transform .4s ease;
+}
+
+.document-line:nth-child(1) {
+    width: 90%;
+}
+
+.document-line:nth-child(2) {
+    width: 75%;
+}
+
+.document-line:nth-child(3) {
+    width: 88%;
+}
+
+.document-line:nth-child(4) {
+    width: 55%;
+}
+
+.document-line:nth-child(5) {
+    width: 80%;
+}
+
+.document-line:nth-child(6) {
+    width: 67%;
+}
+
+
+/* =====================================================
+   DOCUMENT BOXES
+===================================================== */
+
+.document-box {
+    position: absolute;
+
+    width: 42px;
+    height: 42px;
+
+    border:
+        1px solid
+        rgba(40,87,255,.3);
+
+    bottom: 32px;
+
+    left: 25px;
+}
+
+.document-box.second {
+    left: 82px;
+}
+
+.document-box.third {
+    left: 139px;
+
+    border-color:
+        rgba(255,90,31,.35);
+}
+
+
+/* =====================================================
+   SCANNER
+===================================================== */
+
+.scanner {
+    position: absolute;
+
+    left: 10px;
+    right: 10px;
+
+    top: 0;
+
+    height: 2px;
+
+    background:
+        var(--blue);
+
+    box-shadow:
+        0 0 12px
+        rgba(40,87,255,.5);
+
+    opacity: 0;
+
+    z-index: 20;
+}
+
+
+/* =====================================================
+   APPROVED
+===================================================== */
+
+.approved {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.5);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 8px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    z-index: 30;
+
+    transition:
+        opacity .4s ease,
+        transform .5s cubic-bezier(.2,.8,.2,1);
+}
+
+.approved-check {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1.5px solid
+        var(--blue);
+
+    border-radius: 50%;
+
+    color:
+        var(--blue);
+
+    font-size: 22px;
+
+    font-weight: 700;
+}
+
+.approved-title {
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 2px;
+}
+
+.approved-subtitle {
+    font-size: 7px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+    position: absolute;
+
+    left: 50%;
+    bottom: 12%;
+
+    transform:
+        translateX(-50%);
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    color: var(--muted);
+
+    z-index: 25;
+
+    white-space: nowrap;
+
+    transition:
+        color .3s ease;
+}
+
+
+/* =====================================================
+   HOVER STATE — DOCUMENT APPEARS
+===================================================== */
+
+.visual.active .number {
+    opacity: 0;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.7);
+}
+
+.visual.active .cv-label,
+.visual.active .year,
+.visual.active .blue-block {
+    opacity: 0;
+}
+
+.visual.active .orange-dot {
+    transform:
+        scale(1.4);
+}
+
+.visual.active .document {
+    opacity: 1;
+
+    visibility: visible;
+
+    transform:
+        translate(-50%, -50%)
+        rotateX(0deg)
+        rotateY(0deg)
+        scale(1);
+
+    transition:
+        opacity .45s ease,
+        transform .7s cubic-bezier(.2,.8,.2,1),
+        visibility 0s;
+}
+
+
+/* =====================================================
+   DOCUMENT CONTENT REVEAL
+===================================================== */
+
+.visual.active .document-line {
+    transform:
+        scaleX(1);
+}
+
+.visual.active .document-line:nth-child(1) {
+    transition-delay: .45s;
+}
+
+.visual.active .document-line:nth-child(2) {
+    transition-delay: .52s;
+}
+
+.visual.active .document-line:nth-child(3) {
+    transition-delay: .59s;
+}
+
+.visual.active .document-line:nth-child(4) {
+    transition-delay: .66s;
+}
+
+.visual.active .document-line:nth-child(5) {
+    transition-delay: .73s;
+}
+
+.visual.active .document-line:nth-child(6) {
+    transition-delay: .80s;
+}
+
+
+/* =====================================================
+   SCAN ANIMATION
+===================================================== */
+
+.visual.scanning .scanner {
+    opacity: 1;
+
+    animation:
+        scanDocument
+        1.8s
+        cubic-bezier(.45,0,.55,1)
+        forwards;
+}
+
+@keyframes scanDocument {
+
+    0% {
+        top: 8px;
+    }
+
+    100% {
+        top: calc(100% - 10px);
+    }
+}
+
+
+/* =====================================================
+   APPROVED STATE
+===================================================== */
+
+.visual.approved-state .document {
+    opacity: .18;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.95);
+}
+
+.visual.approved-state .approved {
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+}
+
+.visual.approved-state .status {
+    color:
+        var(--blue);
+}
+
+
+/* =====================================================
+   HOVER TILT
+===================================================== */
+
+.visual.active {
+    /* base hover state */
+}
+
+.visual.active:hover .document {
+    /* The JS controls the overall visual tilt.
+       This keeps the document itself stable. */
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+.visual.reset .document {
+    opacity: 0;
+
+    visibility: hidden;
+}
+
+.visual.reset .approved {
+    opacity: 0;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .visual {
+        width: 360px;
+        height: 360px;
+    }
+
+    .number {
+        font-size: 210px;
+    }
+
+    .document {
+        width: 190px;
+        height: 250px;
+    }
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .visual,
+    .number,
+    .document,
+    .approved,
+    .blue-block,
+    .orange-dot {
+        transition: none;
+    }
+
+    .scanner {
+        animation: none !important;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+
+<div class="resume-demo">
+
+
+    <div class="section-label">
+        CV / RESUME
+    </div>
+
+
+    <div
+        class="visual"
+        id="resumeVisual"
+    >
+
+
+        <!-- BACKGROUND -->
+
+        <div class="grid"></div>
+
+
+        <!-- ORIGINAL STATE -->
+
+        <div class="cv-label">
+            CV / RESUME
+        </div>
+
+
+        <div class="number">
+            05
+        </div>
+
+
+        <div class="year">
+            2026
+        </div>
+
+
+        <div class="blue-block"></div>
+
+
+        <div class="orange-dot"></div>
+
+
+        <!-- DOCUMENT -->
+
+        <div class="document">
+
+
+            <div class="document-header">
+
+                <span>
+                    RESUME
+                </span>
+
+                <span>
+                    01 / 01
+                </span>
+
+            </div>
+
+
+            <div class="document-title">
+                CURRICULUM
+            </div>
+
+
+            <div class="document-subtitle">
+                PROFESSIONAL PROFILE
+            </div>
+
+
+            <div class="document-lines">
+
+                <span class="document-line"></span>
+                <span class="document-line"></span>
+                <span class="document-line"></span>
+                <span class="document-line"></span>
+                <span class="document-line"></span>
+                <span class="document-line"></span>
+
+            </div>
+
+
+            <div class="document-box"></div>
+            <div class="document-box second"></div>
+            <div class="document-box third"></div>
+
+
+            <!-- SCANNER -->
+
+            <div class="scanner"></div>
+
+        </div>
+
+
+        <!-- APPROVED -->
+
+        <div class="approved">
+
+            <div class="approved-check">
+                ✓
+            </div>
+
+            <div class="approved-title">
+                RESUME
+            </div>
+
+            <div class="approved-subtitle">
+                APPROVED
+            </div>
+
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div class="status">
+            HOVER TO INSPECT
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+const visual =
+    document.getElementById("resumeVisual");
+
+let running = false;
+let timeoutOne;
+let timeoutTwo;
+let timeoutThree;
+
+
+/* =====================================================
+   HOVER START
+===================================================== */
+
+visual.addEventListener("mouseenter", () => {
+
+    if (running) return;
+
+    running = true;
+
+    clearTimeout(timeoutOne);
+    clearTimeout(timeoutTwo);
+    clearTimeout(timeoutThree);
+
+
+    /*
+     * Step 1:
+     * Convert 05 into document
+     */
+
+    visual.classList.remove("approved-state");
+    visual.classList.remove("reset");
+
+    visual.classList.add("active");
+
+
+    /*
+     * Step 2:
+     * Start scan after document appears
+     */
+
+    timeoutOne = setTimeout(() => {
+
+        visual.classList.add("scanning");
+
+    }, 750);
+
+
+    /*
+     * Step 3:
+     * Show APPROVED after scan
+     */
+
+    timeoutTwo = setTimeout(() => {
+
+        visual.classList.remove("scanning");
+
+        visual.classList.add("approved-state");
+
+    }, 2700);
+
+});
+
+
+/* =====================================================
+   HOVER END
+===================================================== */
+
+visual.addEventListener("mouseleave", () => {
+
+    clearTimeout(timeoutOne);
+    clearTimeout(timeoutTwo);
+    clearTimeout(timeoutThree);
+
+    visual.classList.remove("scanning");
+
+    visual.classList.remove("approved-state");
+
+    visual.classList.remove("active");
+
+    visual.classList.add("reset");
+
+
+    timeoutThree = setTimeout(() => {
+
+        visual.classList.remove("reset");
+
+        running = false;
+
+    }, 600);
+
+});
+
+
+/* =====================================================
+   SUBTLE 3D TILT
+===================================================== */
+
+visual.addEventListener("mousemove", (event) => {
+
+    if (!visual.classList.contains("active")) {
+        return;
+    }
+
+    const rect =
+        visual.getBoundingClientRect();
+
+    const x =
+        event.clientX - rect.left;
+
+    const y =
+        event.clientY - rect.top;
+
+    const centerX =
+        rect.width / 2;
+
+    const centerY =
+        rect.height / 2;
+
+    const rotateY =
+        ((x - centerX) / centerX) * 3;
+
+    const rotateX =
+        ((centerY - y) / centerY) * 2.5;
+
+
+    visual.style.transform =
+        `translate(-50%, -50%)
+         rotateX(${rotateX}deg)
+         rotateY(${rotateY}deg)`;
+});
+
+
+/* =====================================================
+   RESET TILT
+===================================================== */
+
+visual.addEventListener("mouseleave", () => {
+
+    visual.style.transform =
+        "translate(-50%, -50%)";
+
+});
+
+</script>
+
+</body>
+</html>

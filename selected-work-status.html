@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Processor Animation V4</title>
+
+<style>
+
+:root {
+    --cream: #f4f1ea;
+    --black: #111111;
+    --blue: #2857ff;
+    --blue-dark: #173bbd;
+    --orange: #ff5a1f;
+    --muted: #77736b;
+
+    --trace: rgba(17,17,17,.14);
+    --active: rgba(40,87,255,.65);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    background: var(--cream);
+    color: var(--black);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.work {
+    width: 100%;
+    height: 100vh;
+
+    display: grid;
+
+    grid-template-columns:
+        48% 52%;
+}
+
+
+/* =========================================================
+   LEFT CONTENT
+========================================================= */
+
+.content {
+    padding: 140px 15px;
+}
+
+.eyebrow {
+    margin-bottom: 45px;
+
+    font-size: 13px;
+
+    letter-spacing: 3px;
+
+    color: var(--muted);
+}
+
+.title {
+    font-size:
+        clamp(70px, 7vw, 110px);
+
+    line-height: .84;
+
+    letter-spacing: -.06em;
+
+    font-weight: 900;
+
+    margin-bottom: 55px;
+}
+
+.description {
+    max-width: 680px;
+
+    font-size: 20px;
+
+    line-height: 1.55;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   VISUAL
+========================================================= */
+
+.visual {
+    position: relative;
+
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(17,17,17,.22);
+}
+
+
+/* =========================================================
+   PROCESSOR
+========================================================= */
+
+.processor {
+    position: absolute;
+
+    width: 520px;
+    height: 520px;
+
+    left: 50%;
+    top: 50%;
+
+    transform:
+        translate(-50%, -50%);
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+========================================================= */
+
+.grid {
+    position: absolute;
+
+    inset: 0;
+
+    opacity: .42;
+
+    background-image:
+        linear-gradient(
+            rgba(17,17,17,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(17,17,17,.035) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        32px 32px;
+}
+
+
+/* =========================================================
+   BACKGROUND GLOW
+========================================================= */
+
+.background-glow {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 330px;
+    height: 330px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.65);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(40,87,255,.25) 0%,
+            rgba(40,87,255,.12) 30%,
+            rgba(40,87,255,.045) 55%,
+            transparent 72%
+        );
+
+    filter:
+        blur(20px);
+
+    opacity: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    transition:
+        opacity .8s ease,
+        transform 1s
+        cubic-bezier(.2,.8,.2,1);
+}
+
+.processor.active .background-glow {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, -50%)
+        scale(1);
+
+    animation:
+        glowBreathing
+        3s
+        ease-in-out
+        infinite;
+}
+
+@keyframes glowBreathing {
+
+    0%,
+    100% {
+        opacity: .65;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   FRAME
+========================================================= */
+
+.frame {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 390px;
+    height: 390px;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(45deg);
+
+    border:
+        1px solid
+        rgba(17,17,17,.08);
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   CIRCUIT SVG
+========================================================= */
+
+.circuit {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 8;
+
+    overflow: visible;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   PCB TRACES
+========================================================= */
+
+.trace {
+    fill: none;
+
+    stroke:
+        var(--trace);
+
+    stroke-width: 2;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
+
+    transition:
+        stroke .5s ease,
+        filter .5s ease;
+}
+
+.processor.active .trace {
+
+    stroke:
+        var(--active);
+
+    filter:
+        drop-shadow(
+            0 0 3px
+            rgba(40,87,255,.22)
+        );
+}
+
+
+/* =========================================================
+   TRACE TERMINALS
+========================================================= */
+
+.terminal {
+    fill:
+        var(--black);
+
+    transition:
+        fill .4s ease,
+        filter .4s ease,
+        transform .4s ease;
+}
+
+.processor.active .terminal {
+
+    fill:
+        var(--blue);
+
+    filter:
+        drop-shadow(
+            0 0 5px
+            rgba(40,87,255,.5)
+        );
+}
+
+
+/* =========================================================
+   ELECTRICAL WAVE
+========================================================= */
+
+.wave {
+
+    fill:
+        var(--orange);
+
+    opacity: 0;
+
+    filter:
+        drop-shadow(
+            0 0 5px
+            rgba(255,90,31,.9)
+        );
+}
+
+
+/*
+    SVG animateMotion is used here.
+
+    This means the wave physically follows
+    the exact PCB path.
+
+    Every wave travels:
+
+        BUILD → OUTWARD
+*/
+
+
+.processor.active .wave {
+
+    opacity: 1;
+}
+
+
+/* UI */
+
+.processor.active .wave-ui {
+
+    animation:
+        waveUI
+        1.9s
+        linear
+        infinite;
+}
+
+@keyframes waveUI {
+
+    0% {
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* DB */
+
+.processor.active .wave-db {
+
+    animation:
+        waveDB
+        1.9s
+        linear
+        infinite;
+
+    animation-delay:
+        .35s;
+}
+
+
+/* API */
+
+.processor.active .wave-api {
+
+    animation:
+        waveAPI
+        1.9s
+        linear
+        infinite;
+
+    animation-delay:
+        .7s;
+}
+
+
+/* AI */
+
+.processor.active .wave-ai {
+
+    animation:
+        waveAI
+        1.9s
+        linear
+        infinite;
+
+    animation-delay:
+        1.05s;
+}
+
+
+/* =========================================================
+   NODE
+========================================================= */
+
+.node {
+
+    position: absolute;
+
+    width: 62px;
+    height: 62px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background:
+        rgba(255,255,255,.48);
+
+    border:
+        1px solid
+        rgba(17,17,17,.18);
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    z-index: 20;
+
+    transition:
+        transform .6s
+        cubic-bezier(.2,.8,.2,1),
+
+        border-color .5s ease,
+
+        box-shadow .5s ease;
+}
+
+
+/* LED */
+
+.node::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+
+    top: 6px;
+    right: 6px;
+
+    border-radius: 50%;
+
+    background:
+        var(--orange);
+
+    opacity: .65;
+}
+
+.processor.active .node {
+
+    border-color:
+        rgba(40,87,255,.4);
+
+    box-shadow:
+        0 10px 25px
+        rgba(40,87,255,.09);
+}
+
+.processor.active .node::after {
+
+    animation:
+        ledPulse
+        1.6s
+        ease-in-out
+        infinite;
+}
+
+.node-db::after {
+    animation-delay: .25s !important;
+}
+
+.node-api::after {
+    animation-delay: .5s !important;
+}
+
+.node-ai::after {
+    animation-delay: .75s !important;
+}
+
+@keyframes ledPulse {
+
+    0%,
+    100% {
+        opacity: .5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.6);
+    }
+}
+
+
+/* =========================================================
+   NODE POSITIONS
+========================================================= */
+
+.node-ui {
+    left: 45px;
+    top: 82px;
+}
+
+.node-db {
+    left: 28px;
+    top: 230px;
+}
+
+.node-api {
+    right: 45px;
+    top: 82px;
+}
+
+.node-ai {
+    right: 30px;
+    bottom: 72px;
+}
+
+
+/* =========================================================
+   PROCESSOR CORE
+========================================================= */
+
+.core {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 155px;
+    height: 155px;
+
+    transform:
+        translate(-50%, -50%);
+
+    background:
+        linear-gradient(
+            145deg,
+            #3564ff,
+            #173bbd
+        );
+
+    color: white;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 30;
+
+    box-shadow:
+        0 22px 45px
+        rgba(40,87,255,.20);
+
+    transition:
+        transform .5s
+        cubic-bezier(.2,.8,.2,1),
+
+        box-shadow .7s ease;
+}
+
+
+/* Inner border */
+
+.core::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 11px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.28);
+}
+
+
+/* Core grid */
+
+.core-grid {
+
+    position: absolute;
+
+    inset: 26px;
+
+    opacity: .13;
+
+    background-image:
+
+        linear-gradient(
+            rgba(255,255,255,.9) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.9) 1px,
+            transparent 1px
+        );
+
+    background-size:
+        15px 15px;
+}
+
+
+/* Text */
+
+.core-title {
+
+    position: relative;
+
+    z-index: 5;
+
+    font-size: 18px;
+
+    font-weight: 900;
+
+    letter-spacing: 3px;
+}
+
+.core-subtitle {
+
+    position: relative;
+
+    z-index: 5;
+
+    margin-top: 7px;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
+    opacity: .65;
+}
+
+
+/* =========================================================
+   CORE ACTIVE
+========================================================= */
+
+.processor.active .core {
+
+    transform:
+        translate(-50%, -50%)
+        scale(1.035);
+
+    box-shadow:
+
+        0 25px 55px
+        rgba(40,87,255,.3),
+
+        0 0 38px
+        rgba(40,87,255,.2);
+}
+
+
+/* =========================================================
+   ENERGY RING
+========================================================= */
+
+.energy-ring {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 178px;
+    height: 178px;
+
+    transform:
+        translate(-50%, -50%)
+        scale(.8);
+
+    border:
+        1px solid
+        rgba(40,87,255,.5);
+
+    opacity: 0;
+
+    z-index: 25;
+
+    pointer-events: none;
+}
+
+.processor.active .energy-ring {
+
+    animation:
+        energyRing
+        2.8s
+        ease-out
+        infinite;
+}
+
+@keyframes energyRing {
+
+    0% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(.8);
+
+        opacity: .6;
+    }
+
+    65% {
+        opacity: .18;
+    }
+
+    100% {
+
+        transform:
+            translate(-50%, -50%)
+            scale(1.35);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   PINS
+========================================================= */
+
+.pin {
+
+    position: absolute;
+
+    width: 13px;
+    height: 3px;
+
+    background:
+        rgba(17,17,17,.16);
+
+    z-index: 12;
+
+    transition:
+        background .4s ease,
+        box-shadow .4s ease;
+}
+
+.processor.active .pin {
+
+    background:
+        var(--blue);
+
+    box-shadow:
+        0 0 5px
+        rgba(40,87,255,.25);
+}
+
+
+/* left */
+
+.pin-l1 { left: 158px; top: 247px; }
+.pin-l2 { left: 158px; top: 259px; }
+.pin-l3 { left: 158px; top: 271px; }
+.pin-l4 { left: 158px; top: 283px; }
+.pin-l5 { left: 158px; top: 295px; }
+
+
+/* right */
+
+.pin-r1 { right: 158px; top: 247px; }
+.pin-r2 { right: 158px; top: 259px; }
+.pin-r3 { right: 158px; top: 271px; }
+.pin-r4 { right: 158px; top: 283px; }
+.pin-r5 { right: 158px; top: 295px; }
+
+
+/* top */
+
+.pin-t1 {
+    top: 158px;
+    left: 247px;
+    transform: rotate(90deg);
+}
+
+.pin-t2 {
+    top: 158px;
+    left: 259px;
+    transform: rotate(90deg);
+}
+
+.pin-t3 {
+    top: 158px;
+    left: 271px;
+    transform: rotate(90deg);
+}
+
+.pin-t4 {
+    top: 158px;
+    left: 283px;
+    transform: rotate(90deg);
+}
+
+
+/* bottom */
+
+.pin-b1 {
+    bottom: 158px;
+    left: 247px;
+    transform: rotate(90deg);
+}
+
+.pin-b2 {
+    bottom: 158px;
+    left: 259px;
+    transform: rotate(90deg);
+}
+
+.pin-b3 {
+    bottom: 158px;
+    left: 271px;
+    transform: rotate(90deg);
+}
+
+.pin-b4 {
+    bottom: 158px;
+    left: 283px;
+    transform: rotate(90deg);
+}
+
+
+/* =========================================================
+   MARKERS
+========================================================= */
+
+.marker {
+
+    position: absolute;
+
+    width: 5px;
+    height: 5px;
+
+    background:
+        var(--blue);
+
+    opacity: .45;
+}
+
+.marker-1 {
+    left: 60px;
+    top: 55px;
+}
+
+.marker-2 {
+    right: 60px;
+    top: 55px;
+}
+
+.marker-3 {
+    left: 70px;
+    bottom: 60px;
+}
+
+.marker-4 {
+    right: 58px;
+    bottom: 60px;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+
+    position: absolute;
+
+    left: 35px;
+    bottom: 28px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-size: 9px;
+
+    letter-spacing: 2.5px;
+
+    color:
+        var(--muted);
+
+    z-index: 40;
+}
+
+.status-dot {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background:
+        var(--orange);
+
+    transition:
+        background .3s ease,
+        box-shadow .3s ease;
+}
+
+.processor.active .status-dot {
+
+    background:
+        var(--blue);
+
+    box-shadow:
+        0 0 10px
+        rgba(40,87,255,.45);
+}
+
+.active-status {
+    display: none;
+}
+
+.processor.active .normal-status {
+    display: none;
+}
+
+.processor.active .active-status {
+    display: inline;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 950px) {
+
+    .work {
+        grid-template-columns: 1fr;
+    }
+
+    .visual {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .processor.active .wave,
+    .processor.active .energy-ring,
+    .processor.active .node::after,
+    .processor.active .background-glow {
+
+        animation: none !important;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<section class="work">
+
+
+    <!-- =====================================================
+         LEFT
+    ====================================================== -->
+
+    <div class="content">
+
+        <div class="eyebrow">
+            WORK / 03
+        </div>
+
+        <h1 class="title">
+            SELECTED<br>
+            WORK.
+        </h1>
+
+        <p class="description">
+            A selection of projects where I turned ideas
+            into functional products, systems, and experiments.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         RIGHT PROCESSOR
+    ====================================================== -->
+
+    <div class="visual">
+
+        <div
+            class="processor"
+            id="processor"
+        >
+
+
+            <!-- Background -->
+
+            <div class="grid"></div>
+
+            <div class="background-glow"></div>
+
+            <div class="frame"></div>
+
+
+            <!-- =================================================
+                 PCB CIRCUIT
+            ================================================== -->
+
+            <svg
+                class="circuit"
+                viewBox="0 0 520 520"
+                preserveAspectRatio="xMidYMid meet"
+            >
+
+                <!--
+                    IMPORTANT:
+
+                    Every path starts near BUILD
+                    and travels OUTWARD.
+
+                    Therefore every electrical wave
+                    moves in the correct direction.
+                -->
+
+
+                <!-- ==============================
+                     BUILD → UI
+                =============================== -->
+
+                <path
+                    id="path-ui"
+                    class="trace"
+                    d="
+                        M 225 225
+                        L 190 190
+                        L 190 115
+                        L 105 115
+                    "
+                />
+
+
+                <!-- ==============================
+                     BUILD → DB
+                =============================== -->
+
+                <path
+                    id="path-db"
+                    class="trace"
+                    d="
+                        M 225 295
+                        L 190 295
+                        L 190 270
+                        L 75 270
+                    "
+                />
+
+
+                <!-- ==============================
+                     BUILD → API
+                =============================== -->
+
+                <path
+                    id="path-api"
+                    class="trace"
+                    d="
+                        M 295 225
+                        L 330 190
+                        L 330 115
+                        L 415 115
+                    "
+                />
+
+
+                <!-- ==============================
+                     BUILD → AI
+                =============================== -->
+
+                <path
+                    id="path-ai"
+                    class="trace"
+                    d="
+                        M 295 295
+                        L 330 330
+                        L 330 405
+                        L 420 405
+                    "
+                />
+
+
+                <!-- Connection terminals -->
+
+                <circle
+                    class="terminal"
+                    cx="105"
+                    cy="115"
+                    r="4"
+                />
+
+                <circle
+                    class="terminal"
+                    cx="75"
+                    cy="270"
+                    r="4"
+                />
+
+                <circle
+                    class="terminal"
+                    cx="415"
+                    cy="115"
+                    r="4"
+                />
+
+                <circle
+                    class="terminal"
+                    cx="420"
+                    cy="405"
+                    r="4"
+                />
+
+
+                <!--
+                    Electrical waves
+
+                    Each circle follows its corresponding
+                    BUILD → OUTWARD path.
+                -->
+
+                <circle
+                    class="wave wave-ui"
+                    r="4"
+                >
+                    <animateMotion
+                        dur="1.9s"
+                        repeatCount="indefinite"
+                        begin="indefinite"
+                        path="
+                            M 225 225
+                            L 190 190
+                            L 190 115
+                            L 105 115
+                        "
+                    />
+                </circle>
+
+
+                <circle
+                    class="wave wave-db"
+                    r="4"
+                >
+                    <animateMotion
+                        dur="1.9s"
+                        repeatCount="indefinite"
+                        begin="indefinite"
+                        path="
+                            M 225 295
+                            L 190 295
+                            L 190 270
+                            L 75 270
+                        "
+                    />
+                </circle>
+
+
+                <circle
+                    class="wave wave-api"
+                    r="4"
+                >
+                    <animateMotion
+                        dur="1.9s"
+                        repeatCount="indefinite"
+                        begin="indefinite"
+                        path="
+                            M 295 225
+                            L 330 190
+                            L 330 115
+                            L 415 115
+                        "
+                />
+                </circle>
+
+
+                <circle
+                    class="wave wave-ai"
+                    r="4"
+                >
+                    <animateMotion
+                        dur="1.9s"
+                        repeatCount="indefinite"
+                        begin="indefinite"
+                        path="
+                            M 295 295
+                            L 330 330
+                            L 330 405
+                            L 420 405
+                        "
+                    />
+                </circle>
+
+            </svg>
+
+
+            <!-- =================================================
+                 TECHNOLOGY NODES
+            ================================================== -->
+
+            <div class="node node-ui">
+                UI
+            </div>
+
+            <div class="node node-db">
+                DB
+            </div>
+
+            <div class="node node-api">
+                API
+            </div>
+
+            <div class="node node-ai">
+                AI
+            </div>
+
+
+            <!-- =================================================
+                 PROCESSOR PINS
+            ================================================== -->
+
+            <div class="pin pin-l1"></div>
+            <div class="pin pin-l2"></div>
+            <div class="pin pin-l3"></div>
+            <div class="pin pin-l4"></div>
+            <div class="pin pin-l5"></div>
+
+            <div class="pin pin-r1"></div>
+            <div class="pin pin-r2"></div>
+            <div class="pin pin-r3"></div>
+            <div class="pin pin-r4"></div>
+            <div class="pin pin-r5"></div>
+
+            <div class="pin pin-t1"></div>
+            <div class="pin pin-t2"></div>
+            <div class="pin pin-t3"></div>
+            <div class="pin pin-t4"></div>
+
+            <div class="pin pin-b1"></div>
+            <div class="pin pin-b2"></div>
+            <div class="pin pin-b3"></div>
+            <div class="pin pin-b4"></div>
+
+
+            <!-- =================================================
+                 BUILD CORE
+            ================================================== -->
+
+            <div
+                class="core"
+                id="core"
+            >
+
+                <div class="core-grid"></div>
+
+                <div class="core-title">
+                    BUILD
+                </div>
+
+                <div class="core-subtitle">
+                    PROCESSING
+                </div>
+
+            </div>
+
+
+            <!-- Energy -->
+
+            <div class="energy-ring"></div>
+
+
+            <!-- Markers -->
+
+            <div class="marker marker-1"></div>
+            <div class="marker marker-2"></div>
+            <div class="marker marker-3"></div>
+            <div class="marker marker-4"></div>
+
+
+            <!-- Status -->
+
+            <div class="status">
+
+                <div class="status-dot"></div>
+
+                <span class="normal-status">
+                    SYSTEM READY
+                </span>
+
+                <span class="active-status">
+                    PROCESSING
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+
+/*
+==============================================================
+PROCESSOR V4
+==============================================================
+
+The important change:
+
+The electrical waves are no longer positioned with
+generic left/right CSS animation.
+
+Each wave follows a real SVG path.
+
+Every path starts at BUILD and ends at its technology node.
+
+BUILD → UI
+BUILD → DB
+BUILD → API
+BUILD → AI
+
+Therefore the electrical direction is always OUTWARD.
+
+Only hovering BUILD activates the system.
+==============================================================
+*/
+
+
+const processor =
+    document.getElementById("processor");
+
+const core =
+    document.getElementById("core");
+
+const waves =
+    document.querySelectorAll(".wave animateMotion");
+
+
+/* ==========================================================
+   START
+========================================================== */
+
+core.addEventListener(
+    "mouseenter",
+    () => {
+
+        processor.classList.add("active");
+
+        /*
+         * Start every SVG electrical wave.
+         *
+         * SVG animateMotion is used rather than
+         * JavaScript-driven positioning.
+         */
+
+        waves.forEach(
+            animation => {
+
+                animation.beginElement();
+
+            }
+        );
+
+    }
+);
+
+
+/* ==========================================================
+   STOP
+========================================================== */
+
+core.addEventListener(
+    "mouseleave",
+    () => {
+
+        processor.classList.remove("active");
+
+        /*
+         * Reset the electrical waves.
+         */
+
+        waves.forEach(
+            animation => {
+
+                animation.endElement();
+
+            }
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
