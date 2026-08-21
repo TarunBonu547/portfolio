@@ -3479,6 +3479,35 @@ body.is-loaded .nav {
   50% { transform: translateY(-8px) rotate(90deg); }
 }
 
+.footer-section .footer-social {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  position: relative;
+  z-index: 5;
+  margin-top: 16px;
+}
+
+.footer-section .footer-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: var(--color-muted);
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.footer-section .footer-social a:hover {
+  color: var(--color-accent);
+  transform: translateY(-2px);
+}
+
+.footer-section .footer-social svg {
+  width: 18px;
+  height: 18px;
+}
+
 /* ===== Focus States ===== */
 a:focus-visible,
 button:focus-visible {
