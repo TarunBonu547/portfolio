@@ -470,7 +470,7 @@
 
   if (projectTrack && prev && next) {
     let current = 0;
-    const projectNames = ['CINEJUNCTION', 'OFFROAD SEMANTIC SEGMENTATION'];
+    const projectNames = ['CINEJUNCTION', 'CUSTOMER AI'];
 
     function updateSlider() {
       projectTrack.style.transform = 'translateX(-' + (current * 50) + '%)';
