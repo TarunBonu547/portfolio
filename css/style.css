@@ -11,7 +11,7 @@
 
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', 'SF Mono', 'Cascadia Code', monospace;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
 
   --space-3xs: 0.25rem;
   --space-2xs: 0.5rem;
@@ -1335,8 +1335,8 @@ body.is-loaded .nav {
   height: min(700px, 80vh);
   margin: auto;
   position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(17,17,17,.35);
+  overflow: visible;
+  border: none;
   background: transparent;
   perspective: 1000px;
   isolation: isolate;
