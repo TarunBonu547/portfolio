@@ -523,4 +523,39 @@
 
     updateSlider();
   }
+
+  /* ===== Space / Galaxy Parallax ===== */
+  const space = document.querySelector('.space-background');
+  const galaxy = document.getElementById('galaxy');
+  const nebula = document.querySelector('.nebula');
+  const stars = document.querySelectorAll('.stars, .stars2, .stars3');
+
+  if (galaxy && nebula && stars.length && isDesktop && !prefersReducedMotion) {
+    const touchDevice = window.matchMedia('(hover: none)').matches;
+
+    if (!touchDevice) {
+      document.addEventListener('mousemove', function (event) {
+        const x = event.clientX / window.innerWidth - 0.5;
+        const y = event.clientY / window.innerHeight - 0.5;
+
+        galaxy.style.marginLeft = (x * 25) + 'px';
+        galaxy.style.marginTop = (y * 20) + 'px';
+
+        nebula.style.marginLeft = (x * -35) + 'px';
+
+        stars.forEach(function (star, index) {
+          const amount = (index + 1) * -15;
+          star.style.marginLeft = (x * amount) + 'px';
+          star.style.marginTop = (y * amount) + 'px';
+        });
+      });
+
+      galaxy.addEventListener('click', function () {
+        galaxy.style.transform = 'translateY(-50%) scale(1.25)';
+        setTimeout(function () {
+          galaxy.style.transform = 'translateY(-50%) scale(1)';
+        }, 700);
+      });
+    }
+  }
 })();
