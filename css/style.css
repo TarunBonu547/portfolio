@@ -2910,7 +2910,11 @@ body.is-loaded .nav {
   line-height: .8;
   font-weight: 900;
   letter-spacing: -.1em;
-  color: rgba(17,17,17,.11);
+
+  /* FORCE VISIBLE COLOR */
+  color: #5f6699 !important;
+  opacity: 0.65 !important;
+
   user-select: none;
   transition: opacity .35s ease, transform .55s cubic-bezier(.2,.8,.2,1);
   z-index: 1;
@@ -4980,3 +4984,475 @@ button:focus-visible {
 [data-theme="dark"] .lets-talk::after {
   width: 0;
 }
+
+/* =========================================================
+   CERTIFICATIONS — PREMIUM CERTIFICATE COLOR UPGRADE
+   Original animation preserved
+========================================================= */
+
+
+/* =========================================================
+   CERTIFICATE SYSTEM
+========================================================= */
+
+.credentials-certificate-animation .system {
+    position: relative;
+}
+
+
+/* =========================================================
+   AMBIENT INDIGO GLOW
+========================================================= */
+
+.credentials-certificate-animation .system::before {
+    content: "";
+
+    position: absolute;
+
+    width: 420px;
+    height: 300px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(45, 55, 140, 0.13) 0%,
+            rgba(45, 55, 140, 0.05) 40%,
+            transparent 72%
+        );
+
+    filter: blur(25px);
+
+    pointer-events: none;
+
+    z-index: -1;
+}
+
+
+/* =========================================================
+   MAIN CERTIFICATE
+========================================================= */
+
+.credentials-certificate-animation .certificate-main {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1a1a19 0%,
+            #151514 45%,
+            #10100f 100%
+        );
+
+    border: 1px solid rgba(238, 234, 225, 0.18);
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.55),
+        inset 0 0 45px rgba(255, 255, 255, 0.015);
+}
+
+
+/* =========================================================
+   BACK CERTIFICATE 01
+========================================================= */
+
+.credentials-certificate-animation .certificate-back-1 {
+
+    background:
+        linear-gradient(
+            135deg,
+            #151a2a 0%,
+            #0d1120 55%,
+            #090c17 100%
+        );
+
+    border: 1px solid rgba(75, 90, 170, 0.18);
+
+    box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.4);
+}
+
+
+/* =========================================================
+   BACK CERTIFICATE 02
+========================================================= */
+
+.credentials-certificate-animation .certificate-back-2 {
+
+    background:
+        linear-gradient(
+            135deg,
+            #1b1a18 0%,
+            #131311 55%,
+            #0e0e0d 100%
+        );
+
+    border: 1px solid rgba(238, 234, 225, 0.11);
+
+    box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.42);
+}
+
+
+/* =========================================================
+   INNER CERTIFICATE BORDER
+========================================================= */
+
+.credentials-certificate-animation .certificate-main::before {
+
+    border-color:
+        rgba(238, 234, 225, 0.09);
+}
+
+
+/* =========================================================
+   CERTIFICATE HEADER
+========================================================= */
+
+.credentials-certificate-animation .cert-small {
+
+    color: #aaa69d;
+
+    letter-spacing: 0.14em;
+}
+
+
+.credentials-certificate-animation .cert-number {
+
+    color: #817d75;
+
+    letter-spacing: 0.12em;
+}
+
+
+/* =========================================================
+   MAIN CERTIFICATE TITLE
+========================================================= */
+
+.credentials-certificate-animation .cert-title {
+
+    color: #eeeae1;
+
+    text-shadow:
+        0 0 25px rgba(238, 234, 225, 0.03);
+}
+
+
+/* =========================================================
+   HORIZONTAL LINE
+========================================================= */
+
+.credentials-certificate-animation .cert-line {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(238, 234, 225, 0.18),
+            rgba(238, 234, 225, 0.06),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.credentials-certificate-animation .cert-description {
+
+    color: #7d7971;
+
+    letter-spacing: 0.12em;
+}
+
+
+/* =========================================================
+   VERIFIED / SEAL
+========================================================= */
+
+.credentials-certificate-animation .seal {
+
+    color: #ff5a1f;
+
+    border-color: rgba(255, 90, 31, 0.4);
+
+    text-shadow:
+        0 0 15px rgba(255, 90, 31, 0.15);
+}
+
+
+/* =========================================================
+   SIGNATURE
+========================================================= */
+
+.credentials-certificate-animation .signature {
+
+    border-color:
+        rgba(238, 234, 225, 0.18);
+}
+
+
+/* =========================================================
+   ORANGE CORNERS
+========================================================= */
+
+.credentials-certificate-animation .corner {
+
+    border-color: #ff5a1f;
+
+    filter:
+        drop-shadow(
+            0 0 5px rgba(255, 90, 31, 0.18)
+        );
+}
+
+
+/* =========================================================
+   SCANNER
+========================================================= */
+
+.credentials-certificate-animation .scan {
+
+    background: #ff5a1f;
+
+    box-shadow:
+        0 0 10px rgba(255, 90, 31, 0.65),
+        0 0 25px rgba(255, 90, 31, 0.3),
+        0 0 50px rgba(255, 90, 31, 0.08);
+}
+
+
+/* =========================================================
+   FLOATING MARKS
+========================================================= */
+
+.credentials-certificate-animation .float-mark {
+
+    background:
+        rgba(70, 80, 155, 0.28);
+
+    box-shadow:
+        0 0 18px rgba(70, 80, 155, 0.12);
+}
+
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.credentials-certificate-animation .grid {
+
+    opacity: 0.5;
+
+    background-image:
+        linear-gradient(
+            rgba(238, 234, 225, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(238, 234, 225, 0.025) 1px,
+            transparent 1px
+        );
+}
+
+
+/* =========================================================
+   TOP LABEL
+========================================================= */
+
+.credentials-certificate-animation .label {
+
+    color: #817d75;
+}
+
+
+/* =========================================================
+   BOTTOM LABEL
+========================================================= */
+
+.credentials-certificate-animation .bottom-label {
+
+    color: #858178;
+}
+
+
+/* =========================================================
+   SHADOW
+========================================================= */
+
+.credentials-certificate-animation .shadow {
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(0, 0, 0, 0.55),
+            transparent 70%
+        );
+}
+
+
+/* =========================================================
+   HOVER — MAIN CERTIFICATE
+   Only color enhancement; original transforms remain
+========================================================= */
+
+.credentials-certificate-animation:hover
+.certificate-main {
+
+    border-color:
+        rgba(238, 234, 225, 0.25);
+
+    box-shadow:
+        0 30px 70px rgba(0, 0, 0, 0.65),
+        0 0 45px rgba(45, 55, 140, 0.08),
+        inset 0 0 45px rgba(255, 255, 255, 0.018);
+}
+
+
+/* =========================================================
+   HOVER — ORANGE DETAILS
+========================================================= */
+
+.credentials-certificate-animation:hover
+.corner {
+
+    filter:
+        drop-shadow(
+            0 0 8px rgba(255, 90, 31, 0.35)
+        );
+}
+
+
+.credentials-certificate-animation:hover
+.seal {
+
+    color: #ff6a32;
+
+    text-shadow:
+        0 0 20px rgba(255, 90, 31, 0.25);
+}
+
+
+/* =========================================================
+   HOVER — BACK CERTIFICATES
+========================================================= */
+
+.credentials-certificate-animation:hover
+.certificate-back-1 {
+
+    border-color:
+        rgba(75, 90, 170, 0.25);
+}
+
+
+.credentials-certificate-animation:hover
+.certificate-back-2 {
+
+    border-color:
+        rgba(238, 234, 225, 0.15);
+}
+
+
+/* =========================================================
+   SCAN ACTIVE STATE
+========================================================= */
+
+.credentials-certificate-animation
+.scan {
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #ff5a1f,
+            transparent
+        );
+
+    box-shadow:
+        0 0 10px rgba(255, 90, 31, 0.7),
+        0 0 30px rgba(255, 90, 31, 0.25);
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .credentials-certificate-animation *,
+    .credentials-certificate-animation *::before,
+    .credentials-certificate-animation *::after {
+
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =========================================================
+   SPACE BACKGROUND (Canvas layer)
+   ------------------------------------------------------------
+   Added layer for the background.html space engine
+   (js/space-background.js). It is a pure decoration:
+
+   - fixed + inset: 0, so it never affects document flow,
+     section heights or scroll position
+   - z-index: 0, identical to the existing .space-background,
+     so the portfolio content in main (z-index: 1) and the nav
+     stay on top. Source order places it above the existing
+     star field and below all content.
+   - pointer-events: none, so links, buttons, cards, hover
+     states and scroll are untouched
+   - hidden in the light theme, because a deep space canvas
+     would fight the cream design. The engine is paused in
+     the same theme state by js/space-background.js.
+
+   Nothing above this block was modified.
+   ========================================================= */
+
+#spaceBackground {
+
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+    pointer-events: none;
+
+    display: none;
+
+    contain: strict;
+}
+
+[data-theme="dark"] #spaceBackground {
+    display: block;
+}
+
+#spaceCanvas {
+
+    position: absolute;
+    inset: 0;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #spaceCanvas {
+        display: none;
+    }
+}
+

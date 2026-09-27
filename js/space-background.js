@@ -1,0 +1,1607 @@
+/* =========================================================
+   SPACE BACKGROUND ENGINE
+   ------------------------------------------------------------
+   Everything lives inside this one block so the animation can
+   be dropped behind the portfolio as a single self-contained
+   layer. Exposed API at the bottom: SpaceBackground.start()
+   / .stop() / .destroy()
+   ========================================================= */
+
+(function () {
+
+    "use strict";
+
+    /* =========================================================
+       CANVAS SETUP
+    ========================================================= */
+
+    const canvas = document.getElementById("spaceCanvas");
+
+    if (!canvas) {
+        return;
+    }
+
+    /*
+       Integration note: the demo ran on an opaque canvas
+       (alpha: false). Inside the portfolio the existing
+       .space-background star field sits underneath this
+       layer, so the context stays transparent. The same
+       clearRect call then clears to transparent instead of
+       painting black over the existing stars. Every draw
+       routine below is unchanged.
+    */
+
+    const ctx = canvas.getContext("2d");
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let vignette = null;
+    let running = false;
+    let lastFrame = 0;
+
+    const MAX_DPR = 2;
+
+
+    function resizeCanvas() {
+
+        dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.imageSmoothingEnabled = true;
+
+        createVignette();
+        createStars();
+        createAmbientPlanets();
+
+        if (collision && collision.pair[0]) {
+            collision.pair[0].path = null;
+            collision.pair[1].path = null;
+        }
+    }
+
+
+    function createVignette() {
+
+        vignette = ctx.createRadialGradient(
+            width * 0.5,
+            height * 0.5,
+            Math.min(width, height) * 0.25,
+            width * 0.5,
+            height * 0.5,
+            Math.max(width, height) * 0.78
+        );
+
+        vignette.addColorStop(0, "rgba(2,2,6,0)");
+        vignette.addColorStop(1, "rgba(2,2,6,0.72)");
+    }
+
+
+    /* =========================================================
+       UTILITY
+    ========================================================= */
+
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    function randomInt(min, max) {
+        return Math.floor(random(min, max + 1));
+    }
+
+    function pick(list) {
+        return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function chance(probability) {
+        return Math.random() < probability;
+    }
+
+    function clamp(value, min, max) {
+        return value < min ? min : value > max ? max : value;
+    }
+
+
+    /*
+       Colors are pre-resolved to 8-digit hex strings so the
+       render loop never rebuilds rgba() strings per frame.
+    */
+
+    const alphaCache = new Map();
+
+    function withAlpha(hex, alpha) {
+
+        const step = Math.round(clamp(alpha, 0, 1) * 12) / 12;
+        const key = hex + step;
+
+        let value = alphaCache.get(key);
+
+        if (value === undefined) {
+
+            const channel = Math.round(step * 255)
+                .toString(16)
+                .padStart(2, "0");
+
+            value = hex + channel;
+
+            alphaCache.set(key, value);
+        }
+
+        return value;
+    }
+
+
+    /*
+       Controlled palette: indigo, violet, blue, orange, white.
+       No random hues are ever generated.
+    */
+
+    const TINTS = [
+        "#6674ff", /* indigo  */
+        "#7b5cff", /* violet  */
+        "#3f7dff", /* blue    */
+        "#ff7a2a", /* orange  */
+        "#eef1ff"  /* white   */
+    ];
+
+    const TINTS_WARM = ["#ff7a2a", "#ff9a3d"];
+    const TINTS_COOL = ["#6674ff", "#7b5cff", "#3f7dff", "#eef1ff"];
+
+
+    /* =========================================================
+       DEPTH
+       ------------------------------------------------------------
+       far / mid / near scales size, brightness and speed so the
+       scene reads as a distance, not a flat layer. Near objects
+       stay small enough to never dominate the page.
+    ========================================================= */
+
+    const DEPTHS = {
+        far:  { scale: 0.55, alpha: 0.42, speed: 0.55, weight: 0.45 },
+        mid:  { scale: 1.00, alpha: 0.78, speed: 1.00, weight: 0.40 },
+        near: { scale: 1.45, alpha: 1.00, speed: 1.55, weight: 0.15 }
+    };
+
+    function pickDepth() {
+        const value = Math.random();
+        if (value < DEPTHS.far.weight) return "far";
+        if (value < DEPTHS.far.weight + DEPTHS.mid.weight) return "mid";
+        return "near";
+    }
+
+    function depthOf(key) {
+        return DEPTHS[key] || DEPTHS.mid;
+    }
+
+
+    /* =========================================================
+       LIMITS
+       ------------------------------------------------------------
+       Hard caps keep memory flat no matter how long the page
+       is left open.
+    ========================================================= */
+
+    const MAX_STARS = 900;
+    const MAX_MOVERS = 10;
+    const MAX_PARTICLES = 420;
+    const MAX_BLASTS = 3;
+
+
+    /* =========================================================
+       STARS
+    ========================================================= */
+
+    const stars = [];
+
+    function createStars() {
+
+        stars.length = 0;
+
+        const area = width * height;
+        const amount = clamp(Math.floor(area / 7000), 60, MAX_STARS);
+
+        for (let i = 0; i < amount; i++) {
+
+            const key = chance(0.6) ? "far" : chance(0.7) ? "mid" : "near";
+            const depth = depthOf(key);
+
+            stars.push({
+                x: random(0, width),
+                y: random(0, height),
+
+                radius: random(0.3, 1.2) * (0.7 + depth.scale * 0.5),
+
+                alpha: random(0.12, 0.55) * depth.alpha,
+
+                twinkleSpeed: random(0.0004, 0.0018),
+
+                phase: random(0, Math.PI * 2)
+            });
+        }
+    }
+
+
+    function drawStars(time) {
+
+        for (let i = 0; i < stars.length; i++) {
+
+            const star = stars[i];
+
+            const pulse =
+                Math.sin(time * star.twinkleSpeed + star.phase);
+
+            const alpha =
+                Math.max(0.04, star.alpha + pulse * 0.12);
+
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = withAlpha("#dfe4ff", alpha);
+            ctx.fill();
+        }
+    }
+
+
+    /* =========================================================
+       NEBULA HAZE
+       ------------------------------------------------------------
+       Three very dim drifting clouds. Cached gradient stops,
+       only the centre point moves, so the cost is negligible.
+    ========================================================= */
+
+    const haze = [];
+
+    function createHaze() {
+
+        haze.length = 0;
+
+        const colors = ["#2a3a8f", "#4a2f8f", "#123a6f"];
+
+        for (let i = 0; i < colors.length; i++) {
+            haze.push({
+                color: colors[i],
+                x: random(0, width),
+                y: random(0, height),
+                radius: random(0.35, 0.6) * Math.max(width, height),
+                driftX: random(-0.006, 0.006),
+                driftY: random(-0.004, 0.004),
+                alpha: random(0.05, 0.09)
+            });
+        }
+    }
+
+    function updateHaze() {
+
+        for (let i = 0; i < haze.length; i++) {
+
+            const cloud = haze[i];
+
+            cloud.x += cloud.driftX;
+            cloud.y += cloud.driftY;
+
+            if (cloud.x < -cloud.radius) cloud.x = width + cloud.radius;
+            if (cloud.x > width + cloud.radius) cloud.x = -cloud.radius;
+            if (cloud.y < -cloud.radius) cloud.y = height + cloud.radius;
+            if (cloud.y > height + cloud.radius) cloud.y = -cloud.radius;
+        }
+    }
+
+    function drawHaze() {
+
+        for (let i = 0; i < haze.length; i++) {
+
+            const cloud = haze[i];
+
+            const glow = ctx.createRadialGradient(
+                cloud.x, cloud.y, 0,
+                cloud.x, cloud.y, cloud.radius
+            );
+
+            glow.addColorStop(0, withAlpha(cloud.color, cloud.alpha));
+            glow.addColorStop(1, withAlpha(cloud.color, 0));
+
+            ctx.beginPath();
+            ctx.arc(cloud.x, cloud.y, cloud.radius, 0, Math.PI * 2);
+            ctx.fillStyle = glow;
+            ctx.fill();
+        }
+    }
+
+
+    /* =========================================================
+       PLANETS
+    ========================================================= */
+
+    const planets = [];
+
+    function createPlanet(options) {
+
+        const depth = depthOf(options.depth);
+
+        const radius =
+            random(options.minRadius, options.maxRadius) * depth.scale;
+
+        return {
+            kind: "planet",
+
+            x: options.x,
+            y: options.y,
+
+            radius,
+
+            color: options.color || pick(TINTS_COOL),
+
+            depth: depth,
+
+            alpha: depth.alpha * random(0.85, 1),
+
+            glowScale: options.glowScale || 4,
+
+            rotation: random(0, Math.PI * 2),
+            rotationSpeed: random(-0.0006, 0.0006) * depth.speed,
+
+            vx: (options.vx || 0) * depth.speed,
+            vy: (options.vy || 0) * depth.speed,
+
+            path: null,
+            trail: null,
+            life: 0,
+            maxLife: options.maxLife || Infinity
+        };
+    }
+
+
+    /*
+       Two slow drifting planets that anchor the composition.
+       Re-created on resize so they stay proportionally placed.
+    */
+
+    function createAmbientPlanets() {
+
+        planets.length = 0;
+
+        if (width < 480 || height < 320) {
+            return;
+        }
+
+        planets.push(createPlanet({
+            x: width * 0.18,
+            y: height * 0.26,
+            minRadius: 6,
+            maxRadius: 8,
+            color: "#6674ff",
+            depth: "mid",
+            vx: 0.06,
+            vy: -0.03
+        }));
+
+        planets.push(createPlanet({
+            x: width * 0.82,
+            y: height * 0.73,
+            minRadius: 4,
+            maxRadius: 5,
+            color: "#ff7a2a",
+            depth: "far",
+            vx: -0.05,
+            vy: 0.03
+        }));
+    }
+
+    function updateAmbientPlanets() {
+
+        for (let i = 0; i < planets.length; i++) {
+
+            const planet = planets[i];
+
+            planet.x += planet.vx;
+            planet.y += planet.vy;
+            planet.rotation += planet.rotationSpeed;
+
+            if (planet.x < -120 || planet.x > width + 120) {
+                planet.vx *= -1;
+            }
+
+            if (planet.y < -120 || planet.y > height + 120) {
+                planet.vy *= -1;
+            }
+        }
+    }
+
+
+    /* =========================================================
+       COMETS
+       ------------------------------------------------------------
+       Small bright head + very soft tapered tail, curved
+       trajectory, randomised size and speed. Most comets just
+       cross the scene; a few are launched as collision actors.
+    ========================================================= */
+
+    function createComet(options) {
+
+        const settings = options || {};
+        const depth = depthOf(settings.depth || pickDepth());
+
+        const fromLeft = chance(0.5);
+
+        const startX = fromLeft
+            ? -120
+            : width + 120;
+
+        const startY = settings.startY !== undefined
+            ? settings.startY
+            : random(height * 0.08, height * 0.92);
+
+        const endX = fromLeft
+            ? width + 160
+            : -160;
+
+        const endY = settings.endY !== undefined
+            ? settings.endY
+            : clamp(
+                startY + random(-height * 0.45, height * 0.45),
+                -height * 0.2,
+                height * 1.2
+            );
+
+        const speed =
+            random(0.7, 1.9) * depth.speed;
+
+        const length = Math.hypot(endX - startX, endY - startY);
+        const duration = (length / speed) * 16;
+
+        return {
+            kind: "comet",
+
+            x: startX,
+            y: startY,
+
+            endX,
+            endY,
+
+            vx: (endX - startX) / length * speed,
+            vy: (endY - startY) / length * speed,
+
+            /* slight sideways drift gives a curved path */
+            curve: random(-0.00035, 0.00035),
+
+            radius: random(1, 2.2) * depth.scale,
+
+            color: settings.color || (chance(0.35) ? pick(TINTS_WARM) : pick(TINTS_COOL)),
+
+            depth: depth,
+
+            alpha: depth.alpha * random(0.8, 1),
+
+            path: null,
+
+            trail: [],
+
+            life: 0,
+            maxLife: duration
+        };
+    }
+
+
+    /* =========================================================
+       SATELLITES
+       ------------------------------------------------------------
+       Very small, very slow, distant hardware. Never UI-sized.
+    ========================================================= */
+
+    function createSatellite(options) {
+
+        const settings = options || {};
+        const depth = depthOf(settings.depth || (chance(0.75) ? "far" : "mid"));
+
+        const fromTop = chance(0.5);
+
+        const x = settings.x !== undefined
+            ? settings.x
+            : (fromTop ? random(width * 0.1, width * 0.9) : -60);
+
+        const y = settings.y !== undefined
+            ? settings.y
+            : (fromTop ? -60 : random(height * 0.1, height * 0.9));
+
+        const speed = random(0.16, 0.42) * depth.speed;
+
+        const angle = settings.angle !== undefined
+            ? settings.angle
+            : random(0, Math.PI * 2);
+
+        return {
+            kind: "satellite",
+
+            x,
+            y,
+
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed * 0.6,
+
+            scale: random(0.42, 0.62) * depth.scale,
+
+            rotation: random(0, Math.PI * 2),
+            rotationSpeed: random(-0.0008, 0.0008) * depth.speed,
+
+            color: settings.color || "#c3c8dd",
+            panelColor: settings.panelColor || "#4c5fff",
+
+            depth: depth,
+
+            alpha: depth.alpha * random(0.7, 0.95),
+
+            path: null,
+            trail: null,
+
+            life: 0,
+            maxLife: settings.maxLife || 3600
+        };
+    }
+
+
+    /* =========================================================
+       MOVERS
+    ========================================================= */
+
+    const movers = [];
+
+    function addMover(object) {
+
+        if (movers.length >= MAX_MOVERS) {
+            return null;
+        }
+
+        movers.push(object);
+
+        return object;
+    }
+
+    function removeMover(object) {
+
+        const index = movers.indexOf(object);
+
+        if (index !== -1) {
+            movers.splice(index, 1);
+        }
+    }
+
+    function countKind(kind) {
+
+        let total = 0;
+
+        for (let i = 0; i < movers.length; i++) {
+            if (movers[i].kind === kind) total++;
+        }
+
+        return total;
+    }
+
+
+    /* =========================================================
+       COLLISION SETUP
+       ------------------------------------------------------------
+       Each actor is aimed at a shared collision point along a
+       slightly curved arc with a different duration, so the two
+       bodies genuinely converge at different speeds.
+    ========================================================= */
+
+    const COLLISION_TYPES = [
+        { id: "planet-planet",   weight: 0.50 },
+        { id: "satellite-planet", weight: 0.28 },
+        { id: "comet-planet",   weight: 0.22 }
+    ];
+
+    let collision = null;
+
+    function pickCollisionType() {
+
+        let value = Math.random();
+
+        for (let i = 0; i < COLLISION_TYPES.length; i++) {
+
+            const type = COLLISION_TYPES[i];
+
+            value -= type.weight;
+
+            if (value <= 0) {
+                return type.id;
+            }
+        }
+
+        return "planet-planet";
+    }
+
+
+    function aimAt(object, targetX, targetY, duration, curve) {
+
+        const startX = object.x;
+        const startY = object.y;
+
+        const dx = targetX - startX;
+        const dy = targetY - startY;
+        const length = Math.hypot(dx, dy) || 1;
+
+        /* perpendicular control point for a gentle arc */
+        const offset = length * curve;
+
+        object.path = {
+            t: 0,
+            duration,
+            ax: startX,
+            ay: startY,
+            bx: targetX,
+            by: targetY,
+            cx: (startX + targetX) / 2 - (dy / length) * offset,
+            cy: (startY + targetY) / 2 + (dx / length) * offset
+        };
+    }
+
+
+    function createCollision() {
+
+        const type = pickCollisionType();
+
+        const pointX = random(width * 0.28, width * 0.72);
+        const pointY = random(height * 0.22, height * 0.78);
+
+        const baseAngle = random(0, Math.PI * 2);
+
+        const colors = {
+            planetA: chance(0.3) ? pick(TINTS_WARM) : pick(TINTS_COOL),
+            planetB: pick(TINTS_COOL)
+        };
+
+        let a;
+        let b;
+        let durationA;
+        let durationB;
+        let blast;
+
+        if (type === "planet-planet") {
+
+            a = createPlanet({
+                x: pointX - Math.cos(baseAngle) * Math.max(width, height) * 0.8,
+                y: pointY - Math.sin(baseAngle) * Math.max(width, height) * 0.55,
+                minRadius: 3.5,
+                maxRadius: 6.5,
+                color: colors.planetA,
+                depth: pickDepth()
+            });
+
+            b = createPlanet({
+                x: pointX + Math.cos(baseAngle + random(-0.5, 0.5)) * Math.max(width, height) * 0.8,
+                y: pointY + Math.sin(baseAngle + random(-0.5, 0.5)) * Math.max(width, height) * 0.55,
+                minRadius: 2.5,
+                maxRadius: 5,
+                color: colors.planetB,
+                depth: pickDepth()
+            });
+
+            durationA = random(2600, 4200);
+            durationB = durationA * random(0.78, 1.25);
+
+            blast = {
+                flash: random(0.35, 0.6),
+                radius: random(28, 52),
+                debris: randomInt(12, 25),
+                fragments: randomInt(2, 4),
+                speed: random(0.5, 1.5),
+                color: chance(0.4) ? "#ff9a3d" : "#8f9dff"
+            };
+
+        } else if (type === "satellite-planet") {
+
+            const fromLeft = chance(0.5);
+
+            a = createSatellite({
+                x: fromLeft ? -50 : width + 50,
+                y: pointY + random(-0.2, 0.2) * height,
+                angle: fromLeft ? random(-0.6, 0.6) : Math.PI + random(-0.6, 0.6),
+                color: "#c3c8dd",
+                depth: chance(0.6) ? "mid" : "far"
+            });
+
+            b = createPlanet({
+                x: pointX + (fromLeft ? -1 : 1) * width * 0.85,
+                y: pointY + random(-0.25, 0.25) * height,
+                minRadius: 3.5,
+                maxRadius: 6,
+                color: colors.planetB,
+                depth: pickDepth()
+            });
+
+            durationA = random(1500, 2400);
+            durationB = random(3000, 4600);
+
+            blast = {
+                flash: random(0.22, 0.4),
+                radius: random(20, 36),
+                debris: randomInt(10, 18),
+                fragments: randomInt(1, 3),
+                speed: random(0.4, 1.1),
+                color: "#8f9dff"
+            };
+
+        } else {
+
+            /* comet + small planet */
+
+            const fromLeft = chance(0.5);
+            const entryY = pointY + random(-0.3, 0.3) * height;
+
+            a = createComet({
+                startX: fromLeft ? -120 : width + 120,
+                startY: entryY,
+                endX: pointX,
+                endY: pointY,
+                depth: chance(0.4) ? "mid" : "near",
+                color: chance(0.4) ? pick(TINTS_WARM) : "#eef1ff"
+            });
+
+            b = createPlanet({
+                x: pointX + (fromLeft ? 1 : -1) * width * 0.8,
+                y: pointY + random(-0.15, 0.15) * height,
+                minRadius: 2.5,
+                maxRadius: 4.5,
+                color: colors.planetA,
+                depth: chance(0.6) ? "far" : "mid"
+            });
+
+            durationA = random(1100, 2000);
+            durationB = random(3200, 5200);
+
+            blast = {
+                flash: random(0.45, 0.7),
+                radius: random(32, 58),
+                debris: randomInt(14, 25),
+                fragments: randomInt(2, 4),
+                speed: random(0.8, 1.9),
+                color: chance(0.5) ? "#ffb066" : "#aab4ff"
+            };
+        }
+
+        a.trail = a.kind === "comet" ? a.trail : null;
+
+        if (!addMover(a) || !addMover(b)) {
+            removeMover(a);
+            removeMover(b);
+            return;
+        }
+
+        aimAt(a, pointX, pointY, durationA, random(-0.22, 0.22));
+        aimAt(b, pointX, pointY, durationB, random(-0.22, 0.22));
+
+        collision = {
+            pointX,
+            pointY,
+            pair: [a, b],
+            blast,
+            resolved: false
+        };
+    }
+
+
+    /* =========================================================
+       COLLISION EFFECTS
+       ------------------------------------------------------------
+       Deliberately small: one short flash, one thin expanding
+       ring, a handful of debris motes and 1-4 glowing
+       fragments. No fireball, no big gradient wash.
+    ========================================================= */
+
+    const blasts = [];
+    const particles = [];
+
+    function createBlast(x, y, config) {
+
+        if (blasts.length >= MAX_BLASTS) {
+            blasts.shift();
+        }
+
+        blasts.push({
+            x,
+            y,
+
+            radius: config.radius,
+            maxRadius: config.radius,
+
+            alpha: 1,
+            flash: config.flash,
+
+            color: config.color,
+
+            life: 0,
+            duration: 46
+        });
+    }
+
+
+    function createDebris(x, y, config) {
+
+        const count = Math.min(
+            config.debris,
+            Math.max(0, MAX_PARTICLES - particles.length)
+        );
+
+        for (let i = 0; i < count; i++) {
+
+            const angle = random(0, Math.PI * 2);
+            const speed = random(0.25, 1) * config.speed;
+
+            particles.push({
+                kind: "debris",
+
+                x: x + Math.cos(angle) * random(0, 6),
+                y: y + Math.sin(angle) * random(0, 6),
+
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+
+                radius: random(0.4, 1.4),
+
+                color: chance(0.25) ? config.color : "#dfe4ff",
+
+                alpha: random(0.5, 0.95),
+
+                life: 0,
+                duration: random(38, 88)
+            });
+        }
+    }
+
+
+    function createFragments(x, y, config) {
+
+        for (let i = 0; i < config.fragments; i++) {
+
+            if (particles.length >= MAX_PARTICLES) {
+                break;
+            }
+
+            const angle = random(0, Math.PI * 2);
+            const speed = random(0.2, 0.6) * config.speed;
+
+            particles.push({
+                kind: "fragment",
+
+                x,
+                y,
+
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+
+                radius: random(1, 2.1),
+
+                rotation: random(0, Math.PI * 2),
+                rotationSpeed: random(-0.05, 0.05),
+
+                color: config.color,
+
+                alpha: random(0.6, 1),
+
+                life: 0,
+                duration: random(90, 170)
+            });
+        }
+    }
+
+
+    function resolveCollision() {
+
+        if (!collision || collision.resolved) {
+            return;
+        }
+
+        collision.resolved = true;
+
+        const config = collision.blast;
+
+        createBlast(collision.pointX, collision.pointY, config);
+        createDebris(collision.pointX, collision.pointY, config);
+        createFragments(collision.pointX, collision.pointY, config);
+
+        removeMover(collision.pair[0]);
+        removeMover(collision.pair[1]);
+
+        collision = null;
+    }
+
+
+    /* =========================================================
+       DRAW PLANET
+    ========================================================= */
+
+    function drawPlanet(planet) {
+
+        const glowRadius = planet.radius * planet.glowScale;
+
+        const glow = ctx.createRadialGradient(
+            planet.x, planet.y, 0,
+            planet.x, planet.y, glowRadius
+        );
+
+        glow.addColorStop(0, withAlpha(planet.color, 0.28 * planet.alpha));
+        glow.addColorStop(0.45, withAlpha(planet.color, 0.10 * planet.alpha));
+        glow.addColorStop(1, withAlpha(planet.color, 0));
+
+        ctx.beginPath();
+        ctx.arc(planet.x, planet.y, glowRadius, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+
+        const gradient = ctx.createRadialGradient(
+            planet.x - planet.radius * 0.35,
+            planet.y - planet.radius * 0.35,
+            0,
+            planet.x,
+            planet.y,
+            planet.radius
+        );
+
+        gradient.addColorStop(0, withAlpha("#ffffff", 0.85 * planet.alpha));
+        gradient.addColorStop(0.28, withAlpha(planet.color, 0.9 * planet.alpha));
+        gradient.addColorStop(1, "#080812");
+
+        ctx.beginPath();
+        ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+    }
+
+
+    /* =========================================================
+       DRAW COMET
+    ========================================================= */
+
+    function drawComet(comet) {
+
+        const trail = comet.trail;
+
+        if (trail.length > 1) {
+
+            ctx.beginPath();
+            ctx.moveTo(trail[0].x, trail[0].y);
+
+            for (let i = 1; i < trail.length; i++) {
+                ctx.lineTo(trail[i].x, trail[i].y);
+            }
+
+            ctx.lineCap = "round";
+            ctx.strokeStyle = withAlpha(comet.color, 0.10 * comet.alpha);
+            ctx.lineWidth = Math.max(0.6, comet.radius * 1.6);
+            ctx.stroke();
+        }
+
+
+        const glowRadius = comet.radius * 7;
+
+        const glow = ctx.createRadialGradient(
+            comet.x, comet.y, 0,
+            comet.x, comet.y, glowRadius
+        );
+
+        glow.addColorStop(0, withAlpha(comet.color, 0.55 * comet.alpha));
+        glow.addColorStop(0.35, withAlpha(comet.color, 0.16 * comet.alpha));
+        glow.addColorStop(1, withAlpha(comet.color, 0));
+
+        ctx.beginPath();
+        ctx.arc(comet.x, comet.y, glowRadius, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+
+        ctx.beginPath();
+        ctx.arc(comet.x, comet.y, comet.radius, 0, Math.PI * 2);
+        ctx.fillStyle = withAlpha("#ffffff", 0.9 * comet.alpha);
+        ctx.fill();
+    }
+
+
+    /* =========================================================
+       DRAW SATELLITE
+    ========================================================= */
+
+    function drawSatellite(satellite) {
+
+        const s = satellite.scale;
+
+        ctx.save();
+
+        ctx.translate(satellite.x, satellite.y);
+        ctx.rotate(satellite.rotation);
+        ctx.globalAlpha = satellite.alpha;
+
+        /* body */
+        ctx.fillStyle = satellite.color;
+        ctx.fillRect(-4 * s, -2.2 * s, 8 * s, 4.4 * s);
+
+        /* tiny solar panels */
+        ctx.fillStyle = withAlpha(satellite.panelColor, 0.85);
+        ctx.fillRect(-11 * s, -1.5 * s, 5 * s, 3 * s);
+        ctx.fillRect(6 * s, -1.5 * s, 5 * s, 3 * s);
+
+        /* antenna */
+        ctx.strokeStyle = withAlpha("#ffffff", 0.5);
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(0, -2.2 * s);
+        ctx.lineTo(0, -6 * s);
+        ctx.stroke();
+
+        ctx.globalAlpha = 1;
+        ctx.restore();
+    }
+
+
+    /* =========================================================
+       DRAW BLAST + PARTICLES
+    ========================================================= */
+
+    function drawBlasts() {
+
+        for (let i = 0; i < blasts.length; i++) {
+
+            const blast = blasts[i];
+
+            const progress = blast.life / blast.duration;
+
+            /* very brief bright flash, then it is gone */
+            if (blast.life < 10) {
+
+                const flashAlpha =
+                    blast.flash * (1 - blast.life / 10);
+
+                const flashRadius =
+                    blast.maxRadius * (0.12 + progress * 0.35);
+
+                const flash = ctx.createRadialGradient(
+                    blast.x, blast.y, 0,
+                    blast.x, blast.y, flashRadius
+                );
+
+                flash.addColorStop(0, withAlpha("#ffffff", flashAlpha));
+                flash.addColorStop(0.4, withAlpha(blast.color, flashAlpha * 0.5));
+                flash.addColorStop(1, withAlpha(blast.color, 0));
+
+                ctx.beginPath();
+                ctx.arc(blast.x, blast.y, flashRadius, 0, Math.PI * 2);
+                ctx.fillStyle = flash;
+                ctx.fill();
+            }
+
+
+            /* thin expanding shockwave ring */
+            if (blast.life > 4) {
+
+                const ringProgress = (blast.life - 4) / (blast.duration - 4);
+                const ringRadius = blast.radius * (0.15 + ringProgress * 0.85);
+                const ringAlpha = 0.4 * (1 - ringProgress) * (1 - ringProgress);
+
+                if (ringAlpha > 0.004) {
+
+                    ctx.beginPath();
+                    ctx.arc(blast.x, blast.y, ringRadius, 0, Math.PI * 2);
+                    ctx.strokeStyle = withAlpha(blast.color, ringAlpha);
+                    ctx.lineWidth = 0.9;
+                    ctx.stroke();
+                }
+            }
+        }
+    }
+
+
+    function drawParticles() {
+
+        for (let i = 0; i < particles.length; i++) {
+
+            const particle = particles[i];
+
+            const alpha = particle.alpha * (1 - particle.life / particle.duration);
+
+            if (particle.kind === "fragment") {
+
+                ctx.save();
+                ctx.translate(particle.x, particle.y);
+                ctx.rotate(particle.rotation);
+
+                const glowRadius = particle.radius * 5;
+
+                const glow = ctx.createRadialGradient(
+                    0, 0, 0,
+                    0, 0, glowRadius
+                );
+
+                glow.addColorStop(0, withAlpha(particle.color, alpha * 0.5));
+                glow.addColorStop(1, withAlpha(particle.color, 0));
+
+                ctx.beginPath();
+                ctx.arc(0, 0, glowRadius, 0, Math.PI * 2);
+                ctx.fillStyle = glow;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.fillStyle = withAlpha(particle.color, alpha);
+                ctx.fillRect(
+                    -particle.radius,
+                    -particle.radius * 0.45,
+                    particle.radius * 2,
+                    particle.radius * 0.9
+                );
+
+                ctx.restore();
+
+            } else {
+
+                ctx.beginPath();
+                ctx.arc(
+                    particle.x,
+                    particle.y,
+                    particle.radius,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fillStyle = withAlpha(particle.color, alpha);
+                ctx.fill();
+            }
+        }
+    }
+
+
+    /* =========================================================
+       UPDATE
+    ========================================================= */
+
+    function updateMovers(dt) {
+
+        for (let i = movers.length - 1; i >= 0; i--) {
+
+            const object = movers[i];
+            let hit = false;
+
+            if (object.path) {
+
+                const path = object.path;
+
+                path.t = Math.min(1, path.t + dt / path.duration);
+
+                /* slight ease-in so the pair accelerates as they meet */
+                const t = path.t * path.t * (3 - 2 * path.t) * 0.6 + path.t * 0.4;
+
+                const inv = 1 - t;
+
+                object.x =
+                    inv * inv * path.ax +
+                    2 * inv * t * path.cx +
+                    t * t * path.bx;
+
+                object.y =
+                    inv * inv * path.ay +
+                    2 * inv * t * path.cy +
+                    t * t * path.by;
+
+                if (path.t >= 1) {
+                    hit = true;
+                }
+
+            } else {
+
+                object.x += object.vx * dt * 0.0625;
+                object.y += object.vy * dt * 0.0625;
+
+                object.rotation += object.rotationSpeed * dt;
+
+                if (object.kind === "comet" && object.curve) {
+
+                    const scale = object.curve * dt * 0.0625;
+                    const vx = object.vx;
+
+                    object.vx -= object.vy * scale;
+                    object.vy += vx * scale;
+                }
+
+                object.life += dt;
+
+                if (
+                    object.life > object.maxLife ||
+                    object.x < -260 ||
+                    object.x > width + 260 ||
+                    object.y < -260 ||
+                    object.y > height + 260
+                ) {
+                    hit = true;
+                }
+            }
+
+
+            if (object.kind === "comet" && object.trail) {
+
+                object.trail.unshift({ x: object.x, y: object.y });
+
+                if (object.trail.length > 16) {
+                    object.trail.pop();
+                }
+            }
+
+            if (hit) {
+                movers.splice(i, 1);
+            }
+        }
+    }
+
+
+    function updateBlasts(dt) {
+
+        for (let i = blasts.length - 1; i >= 0; i--) {
+
+            const blast = blasts[i];
+
+            blast.life += dt * 0.62;
+
+            if (blast.life >= blast.duration) {
+                blasts.splice(i, 1);
+            }
+        }
+    }
+
+
+    function updateParticles(dt) {
+
+        const step = dt * 0.0625;
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+
+            const particle = particles[i];
+
+            particle.x += particle.vx * step;
+            particle.y += particle.vy * step;
+
+            if (particle.kind === "debris") {
+                particle.vx *= 0.975;
+                particle.vy *= 0.975;
+            }
+
+            if (particle.kind === "fragment") {
+                particle.rotation += particle.rotationSpeed * dt * 0.06;
+            }
+
+            particle.life += dt;
+
+            if (particle.life >= particle.duration) {
+                particles.splice(i, 1);
+            }
+        }
+    }
+
+
+    /* =========================================================
+       SPAWN SCHEDULER
+       ------------------------------------------------------------
+       Every event re-rolls its own delay, so the scene never
+       falls into a repeating rhythm. Collisions are rare and
+       never overlap.
+    ========================================================= */
+
+    const timers = {
+        planet: random(3000, 6000),
+        comet: random(4000, 9000),
+        satellite: random(6000, 12000),
+        collision: random(8000, 13000)
+    };
+
+    function nextDelay(kind) {
+
+        switch (kind) {
+
+            case "planet":
+                return random(6000, 13000);
+
+            case "comet":
+                return random(6000, 14000);
+
+            case "satellite":
+                return random(12000, 24000);
+
+            case "collision":
+                /* mostly 8-16s, with the occasional long quiet spell */
+                return chance(0.22)
+                    ? random(17000, 28000)
+                    : random(8000, 16000);
+        }
+
+        return 8000;
+    }
+
+
+    function spawn(dt) {
+
+        timers.planet -= dt;
+        timers.comet -= dt;
+        timers.satellite -= dt;
+        timers.collision -= dt;
+
+
+        /* drifting small planets */
+        if (timers.planet <= 0) {
+
+            timers.planet = nextDelay("planet");
+
+            if (movers.length < MAX_MOVERS - 1) {
+
+                const depth = pickDepth();
+
+                addMover(createPlanet({
+                    x: chance(0.5) ? -30 : width + 30,
+                    y: random(height * 0.12, height * 0.88),
+
+                    minRadius: 2.5,
+                    maxRadius: 5.5,
+
+                    color: chance(0.25) ? pick(TINTS_WARM) : pick(TINTS_COOL),
+
+                    depth,
+
+                    vx: chance(0.5) ? random(0.3, 0.6) : random(-0.6, -0.3),
+                    vy: random(-0.15, 0.15),
+
+                    maxLife: random(4000, 7000)
+                }));
+            }
+        }
+
+
+        /* comets crossing the scene */
+        if (timers.comet <= 0) {
+
+            timers.comet = nextDelay("comet");
+
+            if (movers.length < MAX_MOVERS - 1 && countKind("comet") < 2) {
+                addMover(createComet());
+            }
+        }
+
+
+        /* distant satellites */
+        if (timers.satellite <= 0) {
+
+            timers.satellite = nextDelay("satellite");
+
+            if (movers.length < MAX_MOVERS - 1 && countKind("satellite") < 2) {
+                addMover(createSatellite());
+            }
+        }
+
+
+        /* major collision event */
+        if (timers.collision <= 0) {
+
+            if (!collision && movers.length <= MAX_MOVERS - 2) {
+
+                createCollision();
+
+                timers.collision = nextDelay("collision");
+
+            } else {
+
+                timers.collision = 2000;
+            }
+        }
+    }
+
+
+    /* =========================================================
+       MAIN LOOP
+    ========================================================= */
+
+    function render(time) {
+
+        const dt = clamp(time - lastFrame, 0, 50);
+        lastFrame = time;
+
+        if (dt === 0) {
+            return;
+        }
+
+        updateHaze();
+
+        spawn(dt);
+
+        updateMovers(dt);
+        updateBlasts(dt);
+        updateParticles(dt);
+        updateAmbientPlanets();
+
+        if (collision && collision.resolved === false) {
+
+            const [a, b] = collision.pair;
+
+            if (
+                a.path && b.path &&
+                a.path.t >= 1 && b.path.t >= 1
+            ) {
+                resolveCollision();
+            }
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        drawHaze();
+        drawStars(time);
+
+        for (let i = 0; i < planets.length; i++) {
+            drawPlanet(planets[i]);
+        }
+
+        for (let i = 0; i < movers.length; i++) {
+
+            const object = movers[i];
+
+            if (object.kind === "comet") {
+                drawComet(object);
+            } else if (object.kind === "satellite") {
+                drawSatellite(object);
+            } else {
+                drawPlanet(object);
+            }
+        }
+
+        drawBlasts();
+        drawParticles();
+
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, width, height);
+    }
+
+
+    function animate(time) {
+
+        if (!running) {
+            return;
+        }
+
+        render(time);
+
+        requestAnimationFrame(animate);
+    }
+
+
+    function start() {
+
+        if (running) {
+            return;
+        }
+
+        running = true;
+        lastFrame = 0;
+
+        requestAnimationFrame(animate);
+    }
+
+
+    function stop() {
+        running = false;
+    }
+
+
+    /* =========================================================
+       PORTFOLIO INTEGRATION GATE
+       ------------------------------------------------------------
+       The portfolio ships a light theme as its default. A deep
+       space canvas would fight it, so the loop only runs while
+       the document theme is "dark". The existing theme toggle
+       only flips the data-theme attribute, so the engine is
+       wired to that attribute instead of the toggle button and
+       the portfolio's own script stays untouched.
+
+       Reduced-motion still wins: if it matches, the loop never
+       starts regardless of theme.
+    ========================================================= */
+
+    const THEME_ATTRIBUTE = "data-theme";
+
+    const reduceMotionQuery =
+        window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let themeObserver = null;
+
+
+    function isDarkTheme() {
+        return document.documentElement.getAttribute(THEME_ATTRIBUTE) === "dark";
+    }
+
+
+    function syncPlayback() {
+
+        if (reduceMotionQuery.matches || !isDarkTheme() || document.hidden) {
+            stop();
+            return;
+        }
+
+        start();
+    }
+
+
+    /* =========================================================
+       INTEGRATION API
+       ------------------------------------------------------------
+       const background = SpaceBackground.init();
+       background.stop();     // pause when a modal opens
+       background.start();
+       background.destroy();  // full teardown
+    ========================================================= */
+
+    const SpaceBackground = {
+        start,
+        stop,
+
+        destroy() {
+
+            stop();
+
+            stars.length = 0;
+            planets.length = 0;
+            movers.length = 0;
+            blasts.length = 0;
+            particles.length = 0;
+            haze.length = 0;
+            alphaCache.clear();
+            collision = null;
+
+            window.removeEventListener("resize", resizeCanvas);
+            document.removeEventListener("visibilitychange", onVisibility);
+
+            if (themeObserver) {
+                themeObserver.disconnect();
+                themeObserver = null;
+            }
+        }
+    };
+
+
+    function onVisibility() {
+        syncPlayback();
+    }
+
+
+    function init() {
+
+        resizeCanvas();
+
+        createHaze();
+
+        window.addEventListener("resize", resizeCanvas, { passive: true });
+        document.addEventListener("visibilitychange", onVisibility);
+
+        themeObserver = new MutationObserver(syncPlayback);
+
+        themeObserver.observe(
+            document.documentElement,
+            { attributes: true, attributeFilter: [THEME_ATTRIBUTE] }
+        );
+
+        if (reduceMotionQuery.addEventListener) {
+            reduceMotionQuery.addEventListener("change", syncPlayback);
+        } else if (reduceMotionQuery.addListener) {
+            reduceMotionQuery.addListener(syncPlayback);
+        }
+
+        syncPlayback();
+
+        return SpaceBackground;
+    }
+
+
+    window.SpaceBackground = SpaceBackground;
+
+    init();
+
+})();

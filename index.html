@@ -48,6 +48,14 @@
         <div class="shooting-star s3"></div>
     </div>
 
+    <!-- Space Background (Canvas layer — engine in js/space-background.js) -->
+    <!-- Sits after .space-background and below main (z-index 1), so the new
+         distant objects render over the existing star field but never over
+         any portfolio content. pointer-events: none keeps input untouched. -->
+    <div id="spaceBackground" aria-hidden="true">
+        <canvas id="spaceCanvas"></canvas>
+    </div>
+
     <main>
         <section class="hero">
             <div class="hero__content">
@@ -674,5 +682,6 @@
     </div>
 
     <script src="js/script.js?v=20260817-2115"></script>
+    <script src="js/space-background.js?v=20260927-0610"></script>
 </body>
 </html>
